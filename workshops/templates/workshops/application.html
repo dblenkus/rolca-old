@@ -1,0 +1,120 @@
+{% extends 'frontend/__base__.html' %}
+
+{% load bitwise_operations %}
+{% load keyvalue %}
+{% load substract %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}workshops/css/workshops.less' />
+{% endblock extendCSS %}
+
+{% block extendJS %}
+    <script src="{{ STATIC_URL }}bower_components/angular-ui-bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+
+    <script src="{{ STATIC_URL }}workshops/js/workshops.js"></script>
+    <script>
+        var ApplicationController = ['$scope', '$window', function ($scope, $window) {
+            $scope.institution = {{ institution|lower }};
+            $scope.sendData = {};
+            $scope.location = $window.location.href;
+            $scope.$watch('institution', function (val) {
+                $scope.name_label = val ? 'Ime in priimek mentorja' : 'Ime in priimek';
+                $scope.email_label = val ? 'Email mentorja' : 'Email';
+            });
+        }];
+    </script>
+{% endblock extendJS %}
+
+{% block content %}
+<div class="row" ng-app>
+    <div class="col-md-12">
+        <h1 class="text-center">Prijava na fotografske delavnice</h1><br>
+    </div>
+
+    <div class="col-md-6 col-md-offset-3">
+        <form method="post" action="{% verbatim %}{{ location }}{% endverbatim %}" role="form" ng-controller="ApplicationController">
+            {% csrf_token %}
+
+            <div class="form-group clearfix">
+                <input type="checkbox" name="institution" ng-model="institution" hidden />
+                <span>Prijavite se kot:&nbsp</span>
+                <div class="btn-group">
+                    <label class="btn btn-default" ng-class="{active: !institution}" ng-click="institution=false">Posameznik</label>
+                    <label class="btn btn-default" ng-class="{active: institution}" ng-click="institution=true">Šola</label>
+                </div>
+            </div>
+
+            <div class="form-group clearfix {% if msg and type|bit_and:2 %}has-error{% endif %}" id="name-group">
+                <input class="form-control" type="text" placeholder="{% verbatim %}{{ name_label }}{% endverbatim %}" name="name" id="name" value="{{name}}" />
+            </div>
+
+            <div class="form-group clearfix {% if msg and type|bit_and:4 %}has-error{% endif %}" id="email-group">
+                <input class="form-control" type="email" placeholder="{% verbatim %}{{ email_label }}{% endverbatim %}" name="email" id="email" value="{{email}}" />
+            </div>
+
+            <div class="form-group clearfix {% if msg and type|bit_and:8 %}has-error{% endif %}" id="institution_name-group">
+                <input class="form-control" type="text" placeholder="Šola" name="institution_name" id="institution_name" value="{{institution_name}}" />
+            </div>
+
+            <div class="form-group clearfix {% if msg and type|bit_and:16 %}has-error{% endif %}"  id="n_of_applicants-group" ng-show="institution">
+                <input class="form-control" type="text" placeholder="Št. prijavljenih" name="n_of_applicants" id="n_of_applicants" value="{{n_of_applicants}}" />
+            </div>
+
+            <span>Izberite delavnice:</span>
+
+            {% for w in workshops %}
+                <div class="panel panel-default {% if msg and type|bit_and:32 %}has-error{% endif %}">
+                    {% if w.limit and w.limit|sub:w.count <= 0 %}
+                    <div class="panel-body sold-out">
+                    {% else %}
+                    <div class="panel-body" ng-class="{selected: w{{w.pk}} }" ng-click="w{{w.pk}} = !w{{w.pk}}" ng-init="w{{w.pk}}={{selected|keyvalue:w.pk|lower}}">
+                    {% endif %}
+                        <div class="row">
+                            <div class="col-sm-1">
+                                {% if w.limit and w.limit|sub:w.count <= 0 %}
+                                <input type="checkbox" disabled/>&nbsp
+                                {% else %}
+                                <input type="checkbox" name="{{w.pk}}" ng-model="w{{w.pk}}" ng-click="$event.stopPropagation()"/>&nbsp
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-11">
+                                <strong>{{ w.title }}</strong><br>
+                                {{ w.description }}<br>
+                                <strong>Datum in čas:</strong> <em>{{w.start_date}}</em><br>
+                                <strong>Lokacija:</strong> <em>{{w.location}}</em><br>
+                                <strong>Vodja:</strong> <em>{{w.instructor}}</em><br>
+
+                                {% if w.limit %}
+                                    {% if w.limit|sub:w.count >= 5 %}
+                                        <small>Samo še {{ w.limit|sub:w.count }} prostih mest.</small>
+                                    {% elif w.limit|sub:w.count >= 3 %}
+                                        <small>Samo še {{ w.limit|sub:w.count }} prosta mest.</small>
+                                    {% elif w.limit|sub:w.count == 2 %}
+                                        <small>Samo še {{ w.limit|sub:w.count }} prosti mest.</small>
+                                    {% elif w.limit|sub:w.count = 1 %}
+                                        <small>Samo še {{ w.limit|sub:w.count }} prosto mest.</small>
+                                    {% else %}
+                                        <span style="color:red;"><small>Vsa mesta so žal zasedena.</small></span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% if msg %}
+                <div class="alert alert-danger">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Napaka!</strong><br> {{ msg|safe }}
+                </div>
+            {% endif %}
+
+            <input class="btn btn-primary btn-block" type="submit" value="Prijava" />
+        </form>
+
+        <div class="clear"></div>
+
+    </div>
+</div>
+{% endblock content %}

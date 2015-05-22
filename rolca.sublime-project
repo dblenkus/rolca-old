@@ -1,0 +1,123 @@
+{
+	"build_systems":
+	[
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "python -u \"$file\""
+		}
+	],
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "Ansible",
+			"path": "ansible"
+		},
+		{
+			"file_exclude_patterns":
+			[
+				"make.bat",
+				"Makefile"
+			],
+			"folder_exclude_patterns":
+			[
+				"_build",
+				"_static",
+				"_templates"
+			],
+			"follow_symlinks": true,
+			"name": "Docs",
+			"path": "docs"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Fiap",
+			"path": "fiap"
+		},
+		{
+			"folder_exclude_patterns":
+			[
+				"static",
+				"templates"
+			],
+			"follow_symlinks": true,
+			"name": "Frontend",
+			"path": "frontend"
+		},
+		{
+			"folder_exclude_patterns":
+			[
+				"bower_components"
+			],
+			"follow_symlinks": true,
+			"name": "Frontend - static",
+			"path": "frontend/static"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Frontend - templates",
+			"path": "frontend/templates"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Jury",
+			"path": "jury"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Login",
+			"path": "login"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Results",
+			"path": "results"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Uploader",
+			"path": "uploader"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Workshops",
+			"path": "workshops"
+		},
+		{
+			"file_exclude_patterns":
+			[
+				"fiap.sublime-project"
+			],
+			"folder_exclude_patterns":
+			[
+				".*",
+				"ansible",
+				"docs",
+				"fiap",
+				"frontend",
+				"jury",
+				"login",
+				"media",
+				"results",
+				"static",
+				"uploader",
+				"workshops"
+			],
+			"follow_symlinks": true,
+			"name": "Other",
+			"path": "/"
+		}
+	],
+	"settings":
+	{
+		"pep8_rcfile": "/Users/domen/rolca/pep8.rc",
+		"pylint_rcfile": "/Users/domen/rolca/pylint.rc",
+		"rulers":
+		[
+			72,
+			89
+		]
+	}
+}

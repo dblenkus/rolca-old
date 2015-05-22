@@ -1,0 +1,119 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}uploader/css/uploader.less' />
+{% endblock extendCSS %}
+
+{% block extendJS %}
+<script>
+    $(document).on('change', '.btn-file :file', function() {
+      var input = $(this),
+          numFiles = input.get(0).files ? input.get(0).files.length : 1,
+          label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.trigger('fileselect', [numFiles, label]);
+    });
+
+    $(document).ready( function() {
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+            input.val(log);
+
+        });
+    });
+</script>
+{% endblock extendJS %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Nalaganje fotografij</h1><br>
+    </div>
+
+    <div class="col-md-6 col-md-offset-3">
+        <div class="alert alert-warning" role="alert">Imena datotek naj ne vsebujejo znakov č, š in ž, lahko pa so ti znaki v naslovih fotografij.</div>
+    </div>
+
+    <div class="col-md-6 col-md-offset-3">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="panel panel-default {% if 'salonSelection' in errors %}has-error{% endif %}">
+                <div class="panel-heading">Izberi natečaj:</div>
+                <div class="panel-body">
+                    {% for salon in salons %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="salonSelection" value="{{salon.pk}}" {% if salonSelection == salon.pk %} checked {% endif %}>{{ salon.title }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">1. fotografija</div>
+                <div class="panel-body">
+                    <div class="form-group clearfix" id="1-group">
+                        <input class="form-control" id="title1" type="text" placeholder="Naslov" value="{{ title1 }}" name="title1"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                Brskaj <input type="file" name="photo1" id="photo1">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">2. fotografija</div>
+                <div class="panel-body">
+                    <div class="form-group clearfix" id="2-group">
+                        <input class="form-control" id="title2" type="text" placeholder="Naslov" value="{{ title2 }}" name="title2"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                Brskaj <input type="file" name="photo2" id="photo2">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">3. fotografija</div>
+                <div class="panel-body">
+                    <div class="form-group clearfix" id="3-group">
+                        <input class="form-control" id="title3" type="text" placeholder="Naslov" value="{{ title3 }}" name="title3"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                Brskaj <input type="file" name="photo3" id="photo3">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+
+            {% if msg %}
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Napaka!</strong> {{ msg|safe }}
+            </div>
+            {% endif %}
+
+            <input class="btn btn-primary btn-block" type="submit" value="Naloži" />
+
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{
+  "name": "raven-js",
+  "version": "1.1.15",
+  "dependencies": {},
+  "main": "dist/raven.js",
+  "homepage": "https://github.com/getsentry/raven-js",
+  "_release": "1.1.15",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.15",
+    "commit": "9de44d91f0befb1d7516fd95986aba26c1e5fba9"
+  },
+  "_source": "git://github.com/getsentry/raven-js.git",
+  "_target": "1.1.15",
+  "_originalSource": "raven-js"
+}

@@ -1,0 +1,14 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="col-md-10 text-center">
+    {% for salon in salons %}
+        <a href="{% url 'list_select' %}/{{salon.pk}}" class="btn btn-default btn-lg" style="margin-bottom: 15px">{{salon.title}}</a><br>
+    {% endfor %}
+</div>
+{% endblock content %}

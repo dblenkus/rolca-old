@@ -1,0 +1,44 @@
+
+.photoThumb{
+    text-align: center;
+    margin-bottom: 3em;
+    padding: 5px 5px;
+
+    img {
+        max-width: 98%;
+        max-height: 98%;
+        box-shadow: 1px 1px 5px #555;
+        transition: box-shadow ease-in-out 0.10s;
+    }
+    &:before {
+        content: "";
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -3.5px;
+    }
+    .rating {
+        margin-top: 0.5em;
+    }
+
+    background-color: transparent;
+    transition: background-color ease-in-out 0.10s;
+    &:hover {
+        background-color: #B2D1EC;
+        img {
+            box-shadow: 0px 0px 5px #555;
+        }
+    }
+}
+.singlePhoto {
+    width: 100%;
+    max-width: 100%;
+
+    img {
+        box-shadow: 1px 1px 5px #555;
+    }
+
+    .rating {
+        margin-top: 0.5em;
+    }
+}

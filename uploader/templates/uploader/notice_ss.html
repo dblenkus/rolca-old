@@ -1,0 +1,136 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-4 text-center">
+        <a href="http://www.fzs-zveza.si/" target="_blank"><img src="{{ STATIC_URL }}frontend/img/fzs.png" alt=""></a>
+        <p>FOTOGRAFSKA ZVEZA SLOVENIJE<br>FZS 14/2014</p>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a href="http://www.escelje.si/" target="_blank"><img src="{{ STATIC_URL }}frontend/img/ekonomska_logo.jpg" alt=""></a>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a href="http://www.df-svit.si/" target="_blank"><img src="{{ STATIC_URL }}frontend/img/df-svit-logo.png" alt=""></a>
+    </div>
+</div>
+
+    <div class="col-xs-12 text-center">
+        <br><br>
+        <a href="http://www.df-svit.si/" target="_blank"><img src="{{ STATIC_URL }}frontend/img/logo_dmf14.png" alt=""></a>
+        <br><br><br>
+    </div>
+
+<h1 class="text-center">»FOTOGRAFIRAM, TOREJ SEM«</h1>
+<h2 class="text-center">VII. tradicionalna vseslovenska srednješolska razstava fotografij</h2>
+<h3 class="text-center">Celje, november 2014</h3>
+
+<br>
+
+<div class="row">
+    <div class="col-xs-3" style="margin-top:60px">
+        <strong>Žirija:</strong><br>
+        David Brusnjak – MF FZS<br>
+        Andrej Potrč – KMF FZS<br>
+        Sanda Ž. Fajfarič
+    </div>
+    <div class="col-xs-5" style="margin-top:50px">
+        <div class="row">
+            <div class="col-xs-12 text-center"><strong>Koledar prireditve:</strong></div>
+            <div class="col-xs-6">Sprejem del:</div><div class="col-xs-6 text-center">29. 09. - 02. 11. 2014</div>
+            <div class="col-xs-6">Žiriranje:</div><div class="col-xs-6 text-center">8. 11. 2014</div>
+            <div class="col-xs-6">Obvestilo o žiriranju:</div><div class="col-xs-6 text-center">17. 11. 2014</div>
+            <div class="col-xs-6">Odprtje razstave:</div><div class="col-xs-6 text-center">26. 11. 2014</div>
+        </div>
+    </div>
+    <div class="col-xs-4 text-center">
+        V.d. ravnateljice - direktorice Ekonomske šole Celje, Gimnazije in srednje šole:<br>
+        Bernarda Marčeta<br>
+        <a href="mailto:Bernarda.Marceta@escelje.si" target="_blank">Bernarda.Marceta@escelje.si</a><br><br>
+
+        Predsednik org. odbora:<br>
+        Domen Kolšek<br>
+        <a href="mailto:dkolsek@gmail.com" target="_blank">dkolsek@gmail.com</a><br><br>
+
+        Predsednik DF Svit:<br>
+        Žiga Gričnik<br>
+        <a href="mailto:z.gricnik@gmail.com" target="_blank">z.gricnik@gmail.com</a>
+    </div>
+</div>
+
+<br>
+
+<h4>Pogoji sodelovanja:</h4>
+<ol>
+    <li>
+        Na natečaju, ki je v skladu s pravili Fotografske zveze Slovenije (FZS), lahko sodelujejo vsi učenci srednjih šol iz Slovenije in zamejstva.
+    </li>
+    <li>
+        Natečaj ima temo: <strong>»FOTOGRAFIRAM, TOREJ SEM«</strong><br>
+        Opis teme: Tema je splošna. To pomeni, da lahko na natečaju sodelujejo vse tematike fotografije, tako barvne kot črnobele.
+    </li>
+    <li>
+        Vsak udeleženec lahko sodeluje s <strong>tremi fotografijami</strong> na dano temo.
+    </li>
+    <li>
+        Poslane fotografije morajo biti v celoti avtorsko delo sodelujočega, za kar ta tudi prevzema vso odgovornost.
+    </li>
+    <li>
+        Format digitalnih fotografij mora biti maksimalno <strong>2400 px (vodoravno) x 1600 px (navpično)</strong> za izdelavo fotografij za razstavo v velikosti 20 x 30cm. Fotografije morajo biti v formatu JPEG ali JPG in ne smejo presegati velikosti <strong>1 MB</strong>.
+    </li>
+    <li>
+        Prijava na fotografski natečaj bo potekala interaktivno na strani <a href="www.df-svit.si" target="_blank">www.df-svit.si</a>. Z izpolnitvijo zahtevanih podatkov, nalaganjem in pošiljanjem datotek (fotografij) avtor potrjuje pogoje udeležbe na natečaju.
+    </li>
+    <li>
+        <strong>Možno bo samo interaktivno oddajanje del.</strong> CD, DVD in drugi nosilci datotek bodo zavrnjeni. Prijava, vključno z nalaganjem fotografij, bo možna <strong>od 29. septembra do 2. novembra 2014</strong>! Prosimo, da redno spremljate novice na <a href="www.df-svit.si" style="color:#000000;" target="_blank">www.df-svit.si</a>!
+    </li>
+    <li>
+        Organizator lahko poslana dela uporabi za nekomercialno promocijo oziroma predstavitev razstave v medijih.
+    </li>
+    <li>
+        Razstava bo v prostorih Ekonomske šole Celje, Gimnazija in srednja šola, Kosovelova 4, 3000 Celje v četrtek 27.11.2014 ob 17 uri. Za najboljša dela bodo ob odprtju razstave podeljene zlate, srebrne in bronaste medalje ter 3 pohvale, in sicer:
+        <ul>
+            <li>posamezne fotografije in</li>
+            <li>šole (štelo bo deset najbolje ocenjenih fotografij s posamezne šole)</li>
+        </ul>
+        Podeljena bo tudi posebna nagrada za najboljšega fotografa med posamezniki (štel se bo seštevek vseh treh ocenjenih fotografij).<br>
+        Za zmagovalce bodo podeljene nagrade, in sicer:
+        <ul>
+            <li>
+                <strong>za najboljšo fotografijo med posamezniki – razvita in uokvirjena fotografija na fotografskem papirju v velikosti 50x70cm</strong>
+            </li>
+            <li>
+                <strong>za najboljšega fotografa med posamezniki – osebno mentorstvo (osebna srečanja, email, Skype, …) s priznanim mojstom fotografije do konca šolskega leta</strong>
+            </li>
+            <li>
+                <strong>za najboljšo šolo – predavanje (2 šolski uri za neomejeno število poslušalcev) ali delavnica (celodnevna delavnica na šoli za omejeno število učencev) priznanega mojstra fotografije.</strong>
+            </li>
+        </ul>
+        Vsak udeleženec lahko na temo dobi samo eno nagrado. Odločitev žirije je dokončna in nepreklicna.
+    </li>
+    <li>
+        Izidi žiriranja so nepreklicni in bodo objavljeni na spletni strani Društva fotografov Svit <a href="www.df-svit.si" target="_blank">www.df-svit.si</a>.
+    </li>
+    <li>
+        Sodelovanje na razstavi pomeni, da avtor sprejema pravila, ki jih postavlja organizator.
+    </li>
+    <li>
+        Dodatne informacije dobite na e-mail naslovu: <a href="mailto:dkolsek@gmail.com" target="_blank">dkolsek@gmail.com</a>.
+    </li>
+</ol>
+
+<br>
+
+<div class="row">
+    <div class="col-xs-6 text-center">
+        <img src="{{ STATIC_URL }}frontend/img/zkdc.jpg" alt="">
+    </div>
+    <div class="col-xs-6 text-center">
+        <a href="http://moc.celje.si/" target="_blank"><img src="{{ STATIC_URL }}frontend/img/MO_Celje.jpg" alt=""></a>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+    <div class="panel-heading" ng-click="">
+        <h3 class="panel-title">{{ salon.title }}</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+
+            <div class="col-md-3">
+                <b>Začetek:</b> {{ salon.start_date | date }} <br />
+                <b>Konec:</b> {{ salon.end_date | date }} <br />
+                <b>Žiriranje:</b> {{ salon.jury_date | date }} <br />
+                <b>Rezultati:</b> {{ salon.results_date | date }} <br />
+            </div>
+
+            <div class="col-md-3">
+                <b>Teme:</b>
+                <ul>
+                    <li ng-repeat="theme in salon.themes">{{ theme.title }}</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <b>Žirantje:</b>
+                <ul>
+                    <li ng-repeat="judge in salon.judges">{{ judge.first_name + ' ' + judge.last_name }}</li>
+                </ul>
+            </div>
+
+            <div class="col-md-2 col-md-offset-1">
+                <button type="button" class="btn btn-success btn-lg" ng-click="go()">
+                    Sodeluj
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

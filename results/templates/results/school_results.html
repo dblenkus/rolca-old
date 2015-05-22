@@ -1,0 +1,20 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="col-md-12">
+    <h2>{{ salon.title }}</h2>
+    <table class="table table-condensed table-hover">
+        {% for school in schools %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ school.name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock content %}

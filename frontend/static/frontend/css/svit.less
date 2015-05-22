@@ -1,0 +1,157 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 373px;
+}
+.df-topline {
+  height: 7px;
+  background: #F5F5F5;
+  width: 100%;
+}
+.df-logo {
+  float: left;
+  margin: 35px 0 0 0;
+}
+.df-header {
+  width: 960px;
+  margin: 0 auto;
+  padding-bottom: 5px;
+  overflow: auto;
+  border-bottom: solid #EAEAEA 2px;
+}
+.df-primary-menu {
+  float: right;
+}
+.df-menu {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 400;
+  list-style: none;
+  padding: 29px 0;
+
+  li {
+    display: inline;
+    float: left;
+    margin: 0 0 0 -1px;
+    padding: 0px;
+    background: url(/static/frontend/img/separator.png) no-repeat right center;
+
+    a {
+      color: #676767;
+      padding: 17px 15px;
+      display: block;
+
+      &:hover {
+        background-color: #444;
+        color: #FFF;
+        text-decoration: none;
+      }
+    }
+    &.df-selected > a{
+      &, &:hover {
+        background: #F96E5B !important;
+        color: #FFF;
+      }
+    }
+  }
+}
+.df-footer-wrapper {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 373px;
+  background: #444;
+  border-bottom: 7px solid #333;
+}
+.df-footer {
+  width: 960px;
+  margin: 0 auto;
+  overflow: auto;
+}
+.df-footer-top {
+  padding: 35px 0;
+  overflow: auto;
+}
+.df-footer-bottom {
+  background-color: #333;
+  font-size: 11px;
+  padding: 25px 25px 18px 25px;
+  overflow: auto;
+}
+.df-one-fourth {
+  width: 22%;
+  margin-right: 4%;
+  float: left;
+}
+.df-one-half {
+  width: 48%;
+  margin-right: 4%;
+  float: left;
+}
+.df-last {
+  margin-right: 0 !important;
+}
+.df-one-fourth > div > h3, .df-one-fourth > h3 {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 29px;
+  font-weight: 400;
+  color: #FFF;
+  margin-top: 0;
+}
+.df-news {
+  list-style: none;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 17px;
+}
+.df-news > li {
+  padding-bottom: 15px;
+}
+.df-news > li > a {
+  color: #CCC;
+  font-weight: bold;
+}
+.df-news > li > span, .df-address {
+  color: #999;
+  line-height: 17px;
+  font-size: 11px;
+}
+.df-address > a {
+  color: #CCC;
+  font-weight: bold;
+  text-decoration: none;
+}
+.df-address > a:hover {
+  color: #F5B;
+}
+.df-copyright {
+  font-size: 11px;
+  color: #999;
+}
+.df-social > ul {
+    padding: 0;
+}
+.df-social > ul > li {
+  background-color: #313131;
+}
+.df-social > ul > li > a {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  text-indent: -9999px;
+}
+.df-facebook {
+  background: url(/static/frontend/img/facebook.png) no-repeat 0 0;
+}
+.df-rss {
+  background: url(/static/frontend/img/rss.png) no-repeat 0 0;
+}

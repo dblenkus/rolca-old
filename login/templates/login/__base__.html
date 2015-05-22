@@ -1,0 +1,17 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendJS %}
+    <script type="text/coffeescript" src="{{ STATIC_URL }}login/app/app.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}login/app/services.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}login/app/controllers.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}login/app/directives.coffee"></script>
+{% endblock extendJS %}
+
+{% block content %}
+<div class="row" ng-app="login">
+    <div class="col-md-6 col-md-offset-3">
+        {% block login_content %}
+        {% endblock login_content %}
+    </div>
+</div>
+{% endblock content %}

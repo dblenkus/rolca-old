@@ -1,0 +1,54 @@
+.clear {
+    clear:both;
+    display:block;
+    overflow:hidden;
+    visibility:hidden;
+    width:0;
+    height:24px;
+    margin:0px
+}
+.menu-btn {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.has-error {
+  border-color: #a94442 !important;
+}
+
+.alert {
+  -webkit-transition: all 1s ease-in-out;
+}
+.alert.ng-enter, .alert.ng-leave.ng-leave-active {
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  height: 0;
+}
+.alert.ng-leave, .alert.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+
+/*image-upload directive*/
+.upload-row {
+    margin-bottom: 20px;
+}
+
+/*image-view directive*/
+.imageview-row {
+    &:before {
+        content: ' ';
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+    }
+    & div {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    &, & * {
+        float: none;
+    }
+}
+

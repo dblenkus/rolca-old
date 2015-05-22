@@ -1,0 +1,20 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="col-md-12 text-center">
+    <h3>{{ salon.title }}</h3>
+</div>
+<div class="col-md-12">
+    <table class="table">
+    <tr><th>#</th><th>Priimek in ime</th><th>Šola</th><th>Število naloženih fotografij</th></tr>
+    {% for user in users|dictsort:"name" %}
+        <tr><td>{{ forloop.counter }}</td><td>{{ user.name }}</td><td>{{user.school}}</td><td>{{ user.count }}</td></tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock content %}

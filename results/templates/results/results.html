@@ -1,0 +1,43 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="col-md-12">
+    <h2>{{ salon.title }}</h2>
+    <table class="table">
+        {% for author in authors %}
+            {% for photo in author %}
+                {% if forloop.first %}
+                    <tr class="active">
+                        <td>{{ forloop.parentloop.counter }}</td>
+                        <td><b>{{ photo.user.get_full_name }}</b></td>
+                        <td><b>{{ photo.user.school }}</b></td>
+                        <td class="text-center">{% if photo.user.pk == best_author %}<b>NAJ&nbspAVTOR<b>{% endif %}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td></td>
+                    <td> </td>
+                    <td>
+                        {% if photo.rating__rating__sum >= accepted %}
+                            <a href="{% url 'photo' photo.pk %}">{{ photo.title }}</a>
+                        {% else %}
+                            {{ photo.title }}
+                        {% endif %}
+                    </td>
+                    {% if photo.pk == gold %}<td style="background-color:#FFD700" class="text-center">ZLATA</td>
+                    {% elif photo.pk == silver %}<td style="background-color:#CCCCCC" class="text-center">SREBRNA</td>
+                    {% elif photo.pk == bronze %}<td style="background-color:#CD7F32" class="text-center">BRONASTA</td>
+                    {% elif photo.pk in hms %}<td class="text-center"><b>DIPLOMA</b></td>
+                    {% elif photo.rating__rating__sum >= accepted %}<td class="text-center">SPREJETA</td>
+                    {% else %}<td></td>{% endif %}
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+</div>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{
+  "name": "fiap",
+  "version": "1.0.0",
+  "author": "Domen Blenkuš",
+  "ignore": [
+    "**/.*",
+    "*.txt",
+    "demos",
+    "bower_components",
+    "bower.json",
+    "node_modules",
+    "README.md",
+    "test*"
+  ],
+  "dependencies": {
+    "angular": "1.2.20",
+    "angular-animate": "1.2.20",
+    "angular-resource": "1.2.20",
+    "angular-route": "1.2.20",
+    "angular-ui-bootstrap": "gh-pages",
+    "blueimp-canvas-to-blob": "2.1.0",
+    "blueimp-load-image": "1.11.2",
+    "bootstrap": "3.2.0",
+    "jquery": "2.1.1",
+    "jquery-file-upload": "9.6.0",
+    "lodash": "2.4.1",
+    "raven-js": "1.1.15"
+  }
+}

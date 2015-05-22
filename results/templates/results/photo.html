@@ -1,0 +1,18 @@
+{% extends 'frontend/__base__.html' %}
+
+{% load staticfiles %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/notice.less' />
+{% endblock extendCSS %}
+
+{% block content %}
+<div class="col-md-12 text-center">
+    <img src="/media/{{ photo.photo.file }}" style="max-width:100%; max-height:900px">
+    <div class="text-center">
+        <b>{{photo.user.get_full_name }}</b><br>
+        {{ photo.title }}
+    </div>
+</div>
+{% endblock content %}

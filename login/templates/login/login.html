@@ -1,0 +1,24 @@
+{% extends 'login/__base__.html' %}
+
+{% block login_content %}
+    <form method="post" action="{% verbatim %}{{ location }}{% endverbatim %}" role="form" ng-controller="LoginFormController">
+        {% csrf_token %}
+
+        <div input-field name="email" placeholder="Email" value="{{ email }}" error="{% if 'email' in errors %}true{% endif %}"></div>
+        <div input-field name="password" placeholder="Geslo" value="{{ password }}" error="{% if 'password' in errors %}true{% endif %}" type="password"></div>
+
+        <input class="btn btn-primary btn-block" id="submit-btn" type="submit" value="Prijava">
+    </form>
+
+    <br>
+    {% if msg %}
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{msg}}
+    </div>
+    {% endif %}
+    <p class="text-center">
+        <a href="{% url 'signup' %}">Registracija</a> <br />
+        <a href="{% url 'password_reset' %}">Pozablejno geslo?</a>
+    </p>
+{% endblock login_content %}

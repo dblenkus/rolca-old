@@ -1,0 +1,38 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}jury/css/jury.less' />
+{% endblock extendCSS %}
+
+{% block extendJS %}
+    <script src="{{ STATIC_URL }}bower_components/angular-route/angular-route.js"></script>
+
+    {% if RAVENJS_DSN %}
+        <script src="{{ STATIC_URL }}bower_components/raven-js/dist/raven.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/angular.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/console.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/native.js"></script>
+
+        <script>
+            Raven.config('{{ RAVENJS_DSN }}', {}).install();
+            Raven.setUser({
+                id: {{ user.id }},
+                email: '{{ user.email }}'
+            });
+        </script>
+    {% endif %}
+
+    <script src="{{ STATIC_URL }}jury/js/cookies.js"></script>
+
+    <script type="text/coffeescript" src="{{ STATIC_URL }}jury/app/app.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}jury/app/services.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}jury/app/directives.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}jury/app/filters.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}jury/app/controllers.coffee"></script>
+{% endblock extendJS %}
+
+{% block big_content %}
+    <div ng-app="jury" ng-controller="RootController" ng-init="user.id={{user.id}}">
+        <div ng-view></div>
+    </div>
+{% endblock big_content %}

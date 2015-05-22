@@ -1,0 +1,33 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row imageview-row">
+            <div class="col-md-2">
+                <img ng-src="{{ file.thumbnail }}"/>
+            </div>
+
+            <div class="col-md-4">
+                <input class="form-control" ng-model="title" placeholder="Naslov">
+            </div>
+
+            <div class="col-md-3">
+                <div class="dropdown" style="width:100%">
+                    <button class="btn btn-default" type="button" data-toggle="dropdown">
+                        {{ selectedTheme.title || 'Izberite temo' }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="theme in themes" role="presentation"><a role="menuitem" tabindex="-1" ng-click="changeTheme(theme)">{{ theme.title }}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger">Izbriši</button>
+            </div>
+
+            <div class="col-md-1">
+                <div loading-wheel enabled="loading"></div>
+            </div>
+        </div>
+    </div>
+</div>

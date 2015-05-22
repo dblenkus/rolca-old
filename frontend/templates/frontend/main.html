@@ -1,0 +1,51 @@
+{% extends 'frontend/__base__.html' %}
+
+{% block extendCSS %}
+    <link rel='stylesheet' href='{{ STATIC_URL }}bower_components/jquery-file-upload/css/jquery.fileupload.css' />
+    <link rel='stylesheet' href='{{ STATIC_URL }}bower_components/jquery-file-upload/css/jquery.fileupload-ui.css' />
+    <link type="text/less" rel='stylesheet' href='{{ STATIC_URL }}frontend/css/frontend.less' />
+{% endblock extendCSS %}
+
+{% block extendJS %}
+    <script src="{{ STATIC_URL }}bower_components/angular-route/angular-route.js"></script>
+    <script src="{{ STATIC_URL }}bower_components/angular-animate/angular-animate.js"></script>
+
+    <script src="{{ STATIC_URL }}bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="{{ STATIC_URL }}bower_components/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+    <script src="{{ STATIC_URL }}bower_components/jquery-file-upload/js/jquery.fileupload.js"></script>
+
+    {% if RAVENJS_DSN %}
+        <script src="{{ STATIC_URL }}bower_components/raven-js/dist/raven.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/angular.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/console.js"></script>
+        <script src="{{ STATIC_URL }}bower_components/raven-js/plugins/native.js"></script>
+
+        <script>
+            Raven.config('{{ RAVENJS_DSN }}', {}).install();
+            Raven.setUser({
+                id: {{ user.id }},
+                email: '{{ user.email }}'
+            });
+        </script>
+    {% endif %}
+
+    <script type="text/coffeescript" src="{{ STATIC_URL }}frontend/app/app.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}frontend/app/directives.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}frontend/app/filters.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}frontend/app/services.coffee"></script>
+    <script type="text/coffeescript" src="{{ STATIC_URL }}frontend/app/controllers.coffee"></script>
+{% endblock extendJS %}
+
+{% block content %}
+    <div ng-app="fiap" ng-controller="RootController" ng-init="user.id={{user.id}}">
+        {% verbatim %}
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{alert.msg}}</alert>
+                </div>
+            </div>
+        {% endverbatim %}
+
+        <div ng-view></div>
+    </div>
+{% endblock content %}

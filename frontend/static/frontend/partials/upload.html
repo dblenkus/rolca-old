@@ -1,0 +1,15 @@
+<div>
+    <div image-upload done="addPhotos"></div>
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            <strong>Teme</strong>
+
+        </div>
+    </div>
+
+    <div image-view ng-repeat="file in files" file="file" salon-obj="salon"></div>
+</div>
+<div ng-hide="files" class="text-center">
+NOBENE FOTKE
+</div>

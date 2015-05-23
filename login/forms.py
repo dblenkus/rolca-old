@@ -30,6 +30,7 @@ class UserProfileChangeForm(UserChangeForm):
 
     class Meta:
         model = UserProfile
+        fields = ('email', 'password')
 
     def __init__(self, *args, **kwargs):
         super(UserProfileChangeForm, self).__init__(*args, **kwargs)

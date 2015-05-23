@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     'compressor',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_jenkins',
     'raven.contrib.django.raven_compat',
     'rest_framework',

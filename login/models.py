@@ -44,6 +44,9 @@ class Mentor(models.Model):
                                   limit_choices_to={'is_mentor': True},
                                   related_name='mentor_profile')
 
+    def __unicode__(self):
+        return self.name if self.name else self.reference
+
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Custom user model
@@ -116,7 +119,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         salons = Salon.objects.filter(judges=self)
         return len(salons) > 0
 
-    def __str__(self):
+    def __unicode__(self):
         return self.get_full_name()
 
 

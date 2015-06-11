@@ -2,7 +2,7 @@ from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
-from django.views.generic import RedirectView
+# from django.views.generic import RedirectView
 
 from rest_framework import routers
 
@@ -28,12 +28,13 @@ urlpatterns = patterns(
     url(r'^api/v1/', include(router.urls)),
     url(r'^delavnice/', include('workshops.urls')),
     url(r'^rezultati/', include('results.urls')),
-    # url(r'^upload/', include('uploader.urls')),
+    url(r'^upload/', include('uploader.urls')),
     url(r'^uporabnik/', include('login.urls')),
     url(r'^natecaji/', include('uploader.urls')),
     url(r'^zirija/', include('jury.urls')),
 
-    url(r'^$', RedirectView.as_view(url='/rezultati/'), name="index")
+    # url(r'^$', RedirectView.as_view(url='/upload/'), name="index")
+    url(r'^', include('frontend.urls')),
 )
 
 if settings.DEBUG:

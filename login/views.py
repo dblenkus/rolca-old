@@ -6,8 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 
-
-from .models import UserProfile, Institution
+from .models import Institution, Mentor, UserProfile
 
 
 def signup_view(request):
@@ -44,6 +43,11 @@ def signup_view(request):
                 errors.append('school')
 
         if len(errors) == 0:
+            if values['mentor']:
+                values['mentor'] = Mentor.objects.create(name=values['mentor'])
+            else:
+                del values['mentor']
+
             password = UserProfile.objects.make_random_password()
             user = UserProfile.objects.create_user(password=password, **values)
             user.save()
@@ -51,10 +55,9 @@ def signup_view(request):
             user = authenticate(email=values['email'], password=password)
             login(request, user)
 
-            # user.email_user('Thanks for signing up!', 'Thanks')
+            user.email_user('Thanks for signing up!', 'Thanks')
 
-            return redirect('upload_app')
-            # return redirect('signup_confirm')
+            return redirect('signup_confirm')
 
     response = {'msg': '<br>'.join(msgs), 'errors': errors}
     response.update({key: values[key] for key in fields})
@@ -83,7 +86,8 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect(request.GET['next'] if 'next' in request.GET else 'index')
+                    return redirect(
+                        request.GET['next'] if 'next' in request.GET else 'upload_app')
                 else:
                     msgs.append("Vaš račun je bil onemogočen.")
             else:
@@ -97,4 +101,4 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('index')
+    return redirect('login')

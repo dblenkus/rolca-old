@@ -8,16 +8,17 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 
 from .forms import UserProfileCreationForm  # , UserProfileChangeForm
-from .models import UserProfile, Institution
+from .models import Institution, Mentor, UserProfile
 
 
 class LoginTestCase(TestCase):
     def setUp(self):
+        mentor = Mentor.objects.create(name="Franc Horvat")
         self.user = UserProfile.objects.create_user(
-            first_name="Janez", last_name="Novak", mentor="Franc Horvat",
+            first_name="Janez", last_name="Novak", mentor=mentor,
             email="janez.novak@example.com", address="Zgornji Kašelj 42",
             post="1234 Zgornji Kašelj", school="OS Zgornji Kašelj")
-        # self.user.set_password('test_pwd')
+        self.user.set_password('test_pwd')
         self.user.save()
 
         self.post_data = {'email': self.user.email, 'password': 'test_pwd'}
@@ -29,7 +30,7 @@ class LoginTestCase(TestCase):
 
     def test_login_logout(self):
         self.client.post(reverse('login'), self.post_data)
-        self.assertEqual(self.client.session['_auth_user_id'], self.user.pk)
+        self.assertEqual(self.client.session['_auth_user_id'], unicode(self.user.pk))
 
         self.client.get(reverse('logout'))
         self.assertNotIn('_auth_user_id', self.client.session)
@@ -118,9 +119,8 @@ class SignupTestCase(TestCase):
     def test_successful_signup(self):
         resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
-        # self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
-        self.assertTemplateUsed(resp, join('uploader', 'upload.html'))
-        # self.assertEqual(len(mail.outbox), 1)
+        self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
+        self.assertEqual(len(mail.outbox), 1)
 
         users = UserProfile.objects.all()
         self.assertEqual(len(users), 1)
@@ -201,7 +201,7 @@ class SignupTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'signup.html'))
         self.assertEqual(['email'], resp.context['errors'])
         self.assertNotEqual(resp.context['msg'], '')
-        # self.assertEqual(len(mail.outbox), 1)  # One mail for first sucessful request
+        self.assertEqual(len(mail.outbox), 1)  # One mail for first sucessful request
 
         self.assertEqual(resp.context['first_name'], self.post_data['first_name'])
         self.assertEqual(resp.context['last_name'], self.post_data['last_name'])
@@ -283,8 +283,7 @@ class SignupTestCase(TestCase):
         del self.post_data['mentor']
         resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
-        # self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
-        self.assertTemplateUsed(resp, join('uploader', 'upload.html'))
+        self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
         # self.assertEqual(len(mail.outbox), 1)
 
     def test_database(self):
@@ -301,15 +300,16 @@ class SignupTestCase(TestCase):
         self.assertEqual(u.school, self.post_data['school'])
         self.assertEqual(u.address, self.post_data['address'])
         self.assertEqual(u.post, self.post_data['post'])
-        self.assertEqual(u.mentor, self.post_data['mentor'])
+        self.assertEqual(str(u.mentor), self.post_data['mentor'])
 
 
 class FormsTestCase(TestCase):
     def setUp(self):
+        mentor = Mentor.objects.create(name="Franc Horvat")
         self.user_data = {
             'first_name': "Janez",
             'last_name': "Novak",
-            'mentor': "Franc Horvat",
+            'mentor': mentor,
             'email': "janez.novak@example.com",
             'address': "Zgornji Kašelj 42",
             'post': "1234 Zgornji Kašelj",
@@ -322,10 +322,10 @@ class FormsTestCase(TestCase):
             'password1': 'test_pwd',
             'password2': 'test_pwd',
         }
-        # self.change_form = {
-        #     'password1': 'new_pwd',
-        #     'password2': 'new_pwd',
-        # }
+        self.change_form = {
+            'password1': 'new_pwd',
+            'password2': 'new_pwd',
+        }
 
     def test_valid_create_form(self):
         form = UserProfileCreationForm(data=self.create_form)
@@ -354,10 +354,11 @@ class FormsTestCase(TestCase):
 
 class UserProfileModelTestCase(TestCase):
     def setUp(self):
+        mentor = Mentor.objects.create(name="Franc Horvat")
         self.user_data = {
             'first_name': "Janez",
             'last_name': "Novak",
-            'mentor': "Franc Horvat",
+            'mentor': mentor,
             'email': "janez.novak@example.com",
             'address': "Zgornji Kašelj 42",
             'post': "1234 Zgornji Kašelj",

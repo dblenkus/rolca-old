@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     'compressor',
-    #'debug_toolbar',
+    # 'debug_toolbar',
     'django_jenkins',
     'raven.contrib.django.raven_compat',
     'rest_framework',
@@ -68,7 +68,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE_CLASSES = (
-#    'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,7 +80,7 @@ MIDDLEWARE_CLASSES = (
     'htmlmin.middleware.HtmlMinifyMiddleware',
     'htmlmin.middleware.MarkRequestMiddleware',
 
-#    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 STATICFILES_FINDERS = (
@@ -149,7 +149,7 @@ COMPRESS_PRECOMPILERS = (
 
 MAX_UPLOAD_SIZE = 1048576  # 1MB
 MAX_IMAGE_RESOLUTION = 2400
-CONTENT_TYPES = ['image/jpeg',]
+CONTENT_TYPES = ['image/jpeg', ]
 
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
@@ -164,39 +164,39 @@ LOGGING = {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
-       'request': {
+        'request': {
             '()': 'django_requestlogging.logging_filters.RequestFilter',
         },
     },
     'formatters': {
         'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s %(remote_addr)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%Y-%m-%d %H:%M:%S"
+            'format': "[%(asctime)s] %(levelname)s %(remote_addr)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
     },
     'handlers': {
-        'production_file':{
-            'level' : 'INFO',
-            'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : 'main.log',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount' : 7,
+        'production_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'main.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
             'formatter': 'verbose',
             'filters': ['require_debug_false', 'request'],
         },
-        'debug_file':{
-            'level' : 'DEBUG',
-            'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : 'debug.log',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount' : 7,
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'debug.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 7,
             'formatter': 'verbose',
             'filters': ['require_debug_true', 'request'],
         },
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',

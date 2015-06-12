@@ -1,5 +1,6 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # pylint: disable=C0103,E1103
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from os.path import join
 

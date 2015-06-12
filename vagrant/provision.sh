@@ -16,3 +16,6 @@ chown -R rolcabox:webapps /webapps/rolcabox/static
 
 echo "Creating superuser..."
 DJANGO_USER_EMAIL='domen@blenkus.com' DJANGO_USER_PASSWORD='nm4xi6nb' python manage.py add_user --admin >/dev/null
+
+echo "Disabeling firewall..."
+systemctl stop firewalld

@@ -14,7 +14,6 @@ class UserProfileCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileCreationForm, self).__init__(*args, **kwargs)
-        # del self.fields['username']  # pylint: disable=no-member
 
     def clean_email(self):
         email = self.cleaned_data["email"]  # pylint: disable=no-member
@@ -34,4 +33,3 @@ class UserProfileChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileChangeForm, self).__init__(*args, **kwargs)
-        # del self.fields['username']  # pylint: disable=no-member

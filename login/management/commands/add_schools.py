@@ -13,6 +13,8 @@ from login.models import Institution
 
 class Command(BaseCommand):
 
+    """Add list of schools to database."""
+
     help = 'Add list of institutions to database.'
 
     def add_arguments(self, parser):

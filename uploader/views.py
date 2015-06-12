@@ -86,6 +86,7 @@ def upload_app(request):
 
     return render(request, os.path.join('uploader', 'upload.html'), response)
 
+
 def list_select(request):
     salons = Salon.objects.all()
 
@@ -108,6 +109,7 @@ def list_details(request, salon_id):
 
     response['salon'] = salon
     return render(request, os.path.join('uploader', 'list_details.html'), response)
+
 
 @csrf_exempt
 def upload(request):

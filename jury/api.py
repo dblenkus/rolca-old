@@ -1,7 +1,6 @@
-from rest_framework import viewsets, serializers, mixins
+from rest_framework import viewsets, serializers
 
 from .models import Rating
-from uploader.models import Salon, Theme, Photo
 
 
 class RatingSerializer(serializers.ModelSerializer):

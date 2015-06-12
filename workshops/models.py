@@ -27,3 +27,6 @@ class Application(models.Model):
     institution = models.BooleanField(default=False)
     institution_name = models.CharField(max_length=100, blank=True)
     n_of_applicants = models.IntegerField()
+
+    def __unicode__(self):
+        return '{} - {}'.format(self.workshop.title, self.name)

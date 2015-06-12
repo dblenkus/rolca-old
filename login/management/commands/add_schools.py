@@ -20,11 +20,11 @@ class Command(BaseCommand):
             'file_names',
             nargs='+',
             default=False,
-            help='List of files to import.'),
+            help='List of files to import.')
         parser.add_argument(
             '-r', '--replace',
             action='store_true',
-            help='Deactivate not listed entries.'),
+            help='Deactivate not listed entries.')
 
     def handle(self, *args, **options):
         if options['replace']:

@@ -91,7 +91,7 @@ class LoginTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_complete.html'))
 
-        u = UserProfile.objects.all()[0]
+        u = UserProfile.objects.all()[0]  # plyint: disable=no-member
         self.assertTrue(u.check_password('new_pwd'))
 
 
@@ -122,7 +122,7 @@ class SignupTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
         self.assertEqual(len(mail.outbox), 1)
 
-        users = UserProfile.objects.all()
+        users = UserProfile.objects.all()  # plyint: disable=no-member
         self.assertEqual(len(users), 1)
 
     def test_empty_post_request(self):
@@ -290,7 +290,7 @@ class SignupTestCase(TestCase):
         resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
 
-        users = UserProfile.objects.all()
+        users = UserProfile.objects.all()  # plyint: disable=no-member
         self.assertEqual(len(users), 1)
 
         u = users[0]

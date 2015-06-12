@@ -43,7 +43,7 @@ class Command(BaseCommand):
         if not email or not password:
             CommandError("Email and password are required")
 
-        users_list = UserProfile.objects.filter(email=email)
+        users_list = UserProfile.objects.filter(email=email)  # pylint: disable=no-member
         if len(users_list) == 1:
             user = users_list[0]
 

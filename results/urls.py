@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView
 
 urlpatterns = patterns(  # pylint: disable=invalid-name
     '',
@@ -18,5 +18,5 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     url(r'^sole/(?P<salon_id>\d+)$', 'results.views.school_results',
         name="school_results"),
 
-    url(r'^foto/(?P<photo_id>\d+)$', 'results.views.photo', name="photo"),
+    url(r'^foto/(?P<photo_id>\d+)$', 'results.views.photo_view', name="photo"),
 )

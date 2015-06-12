@@ -7,8 +7,8 @@ from datetime import date
 
 from rest_framework import viewsets, serializers
 
-from login.api import UserProfileSerializer
 from .models import File, Photo, Salon, Theme
+
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +18,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 class PhotoSerializer(serializers.ModelSerializer):
     photo = FileSerializer()
+
     class Meta:
         model = Photo
         exclude = ('user', 'theme')
@@ -40,9 +41,9 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
 
 class SalonViewSet(viewsets.ModelViewSet):
-    queryset = Salon.objects.filter(end_date__gte=date.today(), start_date__lte=date.today())
+    queryset = Salon.objects.filter(end_date__gte=date.today(),
+                                    start_date__lte=date.today())
     serializer_class = SalonSerializer
-
 
 
 # class UserObjectsOnlyAuthorization(Authorization):

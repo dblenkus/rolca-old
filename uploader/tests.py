@@ -50,7 +50,8 @@
 
 # def create_user():
 #     return [
-#          UserProfile.objects.create_user(email="user@example.com", password="test_pwd"),
+#          UserProfile.objects.create_user(email="user@example.com",
+#                                          password="test_pwd"),
 #     ]
 
 

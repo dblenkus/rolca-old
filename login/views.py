@@ -29,6 +29,7 @@ def signup_view(request):
                 errors.append(key)
 
         try:
+            # pylint: disable=no-member
             user = UserProfile.objects.get(email=values['email'])
             msgs.append("Email naslov že obstaja.")
             errors.append('email')

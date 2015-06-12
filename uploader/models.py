@@ -32,7 +32,7 @@ class Salon(models.Model):
     #: list of judges
     judges = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-    def __str__(self):
+    def __unicode__(self):
         """Return salon's title."""
         return self.title
 
@@ -106,7 +106,7 @@ class File(models.Model):
 
 
 class Photo(models.Model):
-    """
+    """Model for storing uploaded photos.
 
 
 

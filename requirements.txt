@@ -3,7 +3,7 @@ Django==1.8.2
 django-compressor==1.4
 django-debug-toolbar==1.2.1
 django-filter==0.8
-django-jenkins==0.16.3
+django-jenkins==0.17.0
 django-htmlmin==0.7.0
 django-redis==3.7.1
 django-requestlogging==1.0.1

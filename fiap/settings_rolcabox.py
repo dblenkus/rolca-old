@@ -1,7 +1,6 @@
 from .settings import *  # NOQA
 
 DEBUG = True
-TEMPLATE_DEBUG = True
 COMPRESS_ENABLED = False
 HTML_MINIFY = False
 

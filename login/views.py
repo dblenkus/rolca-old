@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Institution, Mentor, UserProfile
+from .models import Institution, Mentor, Profile
 
 
 def signup_view(request):
@@ -31,7 +31,7 @@ def signup_view(request):
 
         try:
             # pylint: disable=no-member
-            user = UserProfile.objects.get(email=values['email'])
+            user = Profile.objects.get(email=values['email'])
             msgs.append("Email naslov že obstaja.")
             errors.append('email')
         except ObjectDoesNotExist:
@@ -50,8 +50,8 @@ def signup_view(request):
             else:
                 del values['mentor']
 
-            password = UserProfile.objects.make_random_password()
-            user = UserProfile.objects.create_user(password=password, **values)
+            password = Profile.objects.make_random_password()
+            user = Profile.objects.create_user(password=password, **values)
             user.save()
 
             user = authenticate(email=values['email'], password=password)

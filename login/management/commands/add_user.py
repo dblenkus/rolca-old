@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 
 from django.core.management.base import BaseCommand, CommandError
-from login.models import UserProfile
+from login.models import Profile
 
 
 class Command(BaseCommand):
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         if not email or not password:
             CommandError("Email and password are required")
 
-        users_list = UserProfile.objects.filter(email=email)  # pylint: disable=no-member
+        users_list = Profile.objects.filter(email=email)  # pylint: disable=no-member
         if len(users_list) == 1:
             user = users_list[0]
 
@@ -58,9 +58,9 @@ class Command(BaseCommand):
             return "Nothing has changed."
 
         if admin:
-            create_fn = UserProfile.objects.create_superuser
+            create_fn = Profile.objects.create_superuser
         else:
-            create_fn = UserProfile.objects.create_user
+            create_fn = Profile.objects.create_user
 
         create_fn(email=email, password=password)
 

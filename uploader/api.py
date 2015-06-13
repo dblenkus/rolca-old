@@ -110,7 +110,7 @@ class SalonViewSet(viewsets.ModelViewSet):
 #
 # class SalonResource(ModelResource):
 #     themes = fields.ToManyField(ThemeResource, 'theme_set', full=True)
-#     judges = fields.ToManyField(UserProfileResource, 'judges', full=True)
+#     judges = fields.ToManyField(ProfileResource, 'judges', full=True)
 #
 #     class Meta:
 #         queryset = Salon.objects.filter(end_date__gte=date.today(),
@@ -132,7 +132,7 @@ class SalonViewSet(viewsets.ModelViewSet):
 #
 # class PhotoResource(ModelResource):
 #     # theme = fields.ToOneField(ThemeResource, 'theme', full=True)
-#     # user = fields.ToOneField(UserProfileResource, 'user', full=True)
+#     # user = fields.ToOneField(ProfileResource, 'user', full=True)
 #     # photo = fields.ToOneField(FileResource, 'photo', full=True)
 #
 #     def obj_create(self, bundle, **kwargs):

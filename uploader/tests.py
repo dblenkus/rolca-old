@@ -10,7 +10,7 @@
 # from tastypie.test import ResourceTestCase, TestApiClient
 
 # from .models import File, Photo, Theme, Salon
-# from login.models import UserProfile
+# from login.models import Profile
 
 
 # API_URL = '/api/v1/'
@@ -50,7 +50,7 @@
 
 # def create_user():
 #     return [
-#          UserProfile.objects.create_user(email="user@example.com",
+#          Profile.objects.create_user(email="user@example.com",
 #                                          password="test_pwd"),
 #     ]
 
@@ -69,7 +69,7 @@
 
 # class UploaderTestCase(TestCase):
 #     def setUp(self):
-#         self.user = UserProfile.objects.create_user(email="test@blenkus.com",
+#         self.user = Profile.objects.create_user(email="test@blenkus.com",
 #                                                     password="test_pwd")
 
 #     def test_uploading_image(self):
@@ -122,7 +122,7 @@
 #         File.objects.all().delete()
 #         Theme.objects.all().delete()
 #         Salon.objects.all().delete()
-#         UserProfile.objects.all().delete()
+#         Profile.objects.all().delete()
 #         super(SalonResourceTest, self).tearDown()
 
 #     def test_dont_show_not_open_salons(self):
@@ -175,7 +175,7 @@
 #         File.objects.all().delete()
 #         Theme.objects.all().delete()
 #         Salon.objects.all().delete()
-#         UserProfile.objects.all().delete()
+#         Profile.objects.all().delete()
 #         super(ThemeResourceTest, self).tearDown()
 
 
@@ -198,7 +198,7 @@
 #         File.objects.all().delete()
 #         Theme.objects.all().delete()
 #         Salon.objects.all().delete()
-#         UserProfile.objects.all().delete()
+#         Profile.objects.all().delete()
 #         super(FileResourceTest, self).tearDown()
 
 
@@ -211,7 +211,7 @@
 #         self.api_client = TestApiClient()
 
 #     def tearDown(self):
-#         UserProfile.objects.all().delete()
+#         Profile.objects.all().delete()
 #         File.objects.all().delete()
 #         Photo.objects.all().delete()
 #         Theme.objects.all().delete()

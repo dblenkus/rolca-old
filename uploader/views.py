@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 from .models import File, Photo, Salon, Theme
-from login.models import UserProfile
+from login.models import Profile
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -98,7 +98,7 @@ def list_details(request, salon_id):
     themes = Theme.objects.filter(salon=salon)
 
     response = {'users': []}
-    for user in UserProfile.objects.all():  # pylint: disable=no-member
+    for user in Profile.objects.all():  # pylint: disable=no-member
         count = Photo.objects.filter(theme__in=themes, user=user).count()
         if count > 0:
             response['users'].append({

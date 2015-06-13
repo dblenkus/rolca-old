@@ -4,34 +4,34 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import UserProfile
+from .models import Profile
 
 
-class UserProfileCreationForm(UserCreationForm):
+class ProfileCreationForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = UserProfile
+        model = Profile
         fields = ("email",)
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileCreationForm, self).__init__(*args, **kwargs)
+        super(ProfileCreationForm, self).__init__(*args, **kwargs)
 
     def clean_email(self):
         email = self.cleaned_data["email"]  # pylint: disable=no-member
         try:
-            UserProfile.objects.get(email=email)  # pylint: disable=no-member
+            Profile.objects.get(email=email)  # pylint: disable=no-member
             raise forms.ValidationError("A user with that email already exists.")
         except ObjectDoesNotExist:
             return email
 
 
-class UserProfileChangeForm(UserChangeForm):
+class ProfileChangeForm(UserChangeForm):
     email = forms.EmailField()
 
     class Meta:
-        model = UserProfile
+        model = Profile
         fields = ('email', 'password')
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileChangeForm, self).__init__(*args, **kwargs)
+        super(ProfileChangeForm, self).__init__(*args, **kwargs)

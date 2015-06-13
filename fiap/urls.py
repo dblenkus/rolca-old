@@ -6,15 +6,15 @@ from django.contrib import admin
 
 from rest_framework import routers
 
-from login.api import UserProfileViewSet, InstitutionViewSet
+from login.api import ProfileViewSet, InstitutionViewSet
 from uploader.api import PhotoViewSet, SalonViewSet
 from jury.api import RatingViewSet
-# from login.api import UserProfileResource, InstitutionResource
+# from login.api import ProfileResource, InstitutionResource
 # from uploader.api import PhotoResource, SalonResource, ThemeResource, FileResource
 
 
 router = routers.DefaultRouter()
-router.register(r'user', UserProfileViewSet)
+router.register(r'user', ProfileViewSet)
 router.register(r'school', InstitutionViewSet)
 router.register(r'salon', SalonViewSet)
 router.register(r'photo', PhotoViewSet)

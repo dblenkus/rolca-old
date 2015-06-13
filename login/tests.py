@@ -8,14 +8,14 @@ from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
 
-from .forms import UserProfileCreationForm  # , UserProfileChangeForm
-from .models import Institution, Mentor, UserProfile
+from .forms import ProfileCreationForm  # , ProfileChangeForm
+from .models import Institution, Mentor, Profile
 
 
 class LoginTestCase(TestCase):
     def setUp(self):
         mentor = Mentor.objects.create(name="Franc Horvat")
-        self.user = UserProfile.objects.create_user(
+        self.user = Profile.objects.create_user(
             first_name="Janez", last_name="Novak", mentor=mentor,
             email="janez.novak@example.com", address="Zgornji Kašelj 42",
             post="1234 Zgornji Kašelj", school="OS Zgornji Kašelj")
@@ -92,7 +92,7 @@ class LoginTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_complete.html'))
 
-        u = UserProfile.objects.all()[0]  # plyint: disable=no-member
+        u = Profile.objects.all()[0]  # plyint: disable=no-member
         self.assertTrue(u.check_password('new_pwd'))
 
 
@@ -123,7 +123,7 @@ class SignupTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
         self.assertEqual(len(mail.outbox), 1)
 
-        users = UserProfile.objects.all()  # plyint: disable=no-member
+        users = Profile.objects.all()  # plyint: disable=no-member
         self.assertEqual(len(users), 1)
 
     def test_empty_post_request(self):
@@ -291,7 +291,7 @@ class SignupTestCase(TestCase):
         resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
 
-        users = UserProfile.objects.all()  # plyint: disable=no-member
+        users = Profile.objects.all()  # plyint: disable=no-member
         self.assertEqual(len(users), 1)
 
         u = users[0]
@@ -329,31 +329,31 @@ class FormsTestCase(TestCase):
         }
 
     def test_valid_create_form(self):
-        form = UserProfileCreationForm(data=self.create_form)
+        form = ProfileCreationForm(data=self.create_form)
         self.assertEqual(form.is_valid(), True)  # pylint: disable=no-member
 
     def test_missmatching_create_passwords(self):
         self.create_form['password2'] = "wrong_pwd"
-        form = UserProfileCreationForm(data=self.create_form)
+        form = ProfileCreationForm(data=self.create_form)
         self.assertEqual(form.is_valid(), False)  # pylint: disable=no-member
 
     def test_existing_email(self):
-        UserProfile.objects.create_user(**self.user_data)
+        Profile.objects.create_user(**self.user_data)
 
-        form = UserProfileCreationForm(data=self.create_form)
+        form = ProfileCreationForm(data=self.create_form)
         self.assertEqual(form.is_valid(), False)  # pylint: disable=no-member
 
     # def test_valid_change_form(self):
-    #     form = UserProfileChangeForm(data=self.change_form)
+    #     form = ProfileChangeForm(data=self.change_form)
     #     self.assertEqual(form.is_valid(), True)
 
     # def test_missmatching_change_passwords(self):
     #     self.change_form['password2'] = "wrong_pwd"
-    #     form = UserProfileChangeForm(data=self.change_form)
+    #     form = ProfileChangeForm(data=self.change_form)
     #     self.assertEqual(form.is_valid(), False)
 
 
-class UserProfileModelTestCase(TestCase):
+class ProfileModelTestCase(TestCase):
     def setUp(self):
         mentor = Mentor.objects.create(name="Franc Horvat")
         self.user_data = {
@@ -366,7 +366,7 @@ class UserProfileModelTestCase(TestCase):
             'school': "OS Zgornji Kašelj",
         }
 
-        self.user = UserProfile.objects.create_user(**self.user_data)
+        self.user = Profile.objects.create_user(**self.user_data)
         self.user.set_password('test_pwd')
         self.user.save()
 

@@ -9,9 +9,9 @@ from django.utils import timezone
 from uploader.models import Salon
 
 
-class UserProfileManager(UserManager):
+class ProfileManager(UserManager):
 
-    """Custom user manager for `UserProfile` model."""
+    """Custom user manager for `Profile` model."""
 
     def _create_user(self, email, password, is_staff,
                      is_superuser, **extra_fields):
@@ -35,14 +35,14 @@ class Mentor(models.Model):
     """Model for linking Users with their mentors.
 
     Link can be represented as mentor's name in `name` field or as
-    reference to other `UserProfile` instance in `reference` field.
+    reference to other `Profile` instance in `reference` field.
 
     """
     #: mentors name
     name = models.CharField(max_length=100, blank=True)
 
     #: reference to mentor's profile
-    reference = models.ForeignKey('UserProfile', blank=True, null=True,
+    reference = models.ForeignKey('Profile', blank=True, null=True,
                                   limit_choices_to={'is_mentor': True},
                                   related_name='mentor_profile')
 
@@ -50,7 +50,7 @@ class Mentor(models.Model):
         return self.name if self.name else self.reference
 
 
-class UserProfile(AbstractBaseUser, PermissionsMixin):
+class Profile(AbstractBaseUser, PermissionsMixin):
     """Custom user model
 
         Fields inherited from AbstracBasetUser:
@@ -94,7 +94,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     #:
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
-    objects = UserProfileManager()
+    objects = ProfileManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -2,18 +2,18 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from rest_framework import serializers, viewsets, filters
 
-from .models import UserProfile, Institution
+from .models import Profile, Institution
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfile
+        model = Profile
         fields = ('id', 'first_name', 'last_name', 'last_login')
 
 
-class UserProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = UserProfile.objects.all()  # pylint: disable=no-member
-    serializer_class = UserProfileSerializer
+class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()  # pylint: disable=no-member
+    serializer_class = ProfileSerializer
 
 
 class InstitutionSerializer(serializers.ModelSerializer):

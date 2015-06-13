@@ -3,13 +3,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import UserProfileChangeForm, UserProfileCreationForm
-from .models import UserProfile
+from .forms import ProfileChangeForm, ProfileCreationForm
+from .models import Profile
 
 
-class UserProfileAdmin(UserAdmin):
-    form = UserProfileChangeForm
-    add_form = UserProfileCreationForm
+class ProfileAdmin(UserAdmin):
+    form = ProfileChangeForm
+    add_form = ProfileCreationForm
 
     fieldsets = (
         (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
@@ -34,4 +34,4 @@ class UserProfileAdmin(UserAdmin):
     ordering = ('email', 'first_name', 'last_name')
 
 
-admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(Profile, ProfileAdmin)

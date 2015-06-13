@@ -4,12 +4,12 @@ from selenium import webdriver
 from django.test import LiveServerTestCase
 from django.conf import settings
 
-from login.models import UserProfile
+from login.models import Profile
 
 
 class FrontendSeleniumTest(LiveServerTestCase):
     def setUp(self):
-        UserProfile.objects.create_superuser(email='test@blenkus.com',
+        Profile.objects.create_superuser(email='test@blenkus.com',
                                              password='test_pwd')
 
         self.client = webdriver.Chrome('/Applications/chromedriver')

@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'r539#h*5#plat#^o4@n!ix&vg=*(7)8o%$)gx&m_r&qbh!2w!9'
 
-AUTH_USER_MODEL = 'login.UserProfile'
+AUTH_USER_MODEL = 'login.Profile'
 
 ADMINS = (('Domen Blenkus', 'domen@blenkus.com'), )
 

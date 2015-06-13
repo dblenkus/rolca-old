@@ -6,7 +6,7 @@ from django.db.models import Sum, Count
 from django.shortcuts import render
 
 from uploader.models import Salon, Theme, Photo
-from login.models import UserProfile as User, Institution
+from login.models import Profile as User, Institution
 
 
 # @login_required

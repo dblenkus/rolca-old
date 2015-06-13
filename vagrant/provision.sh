@@ -2,8 +2,9 @@ cd /webapps/rolcabox/rolca
 source ../bin/activate
 
 echo "Updating requirements..."
-yum install -y libffi-devel >/dev/null
-pip install requests[security] >/dev/null
+yum install -y libffi-devel >/dev/null 2>&1
+pip install requests[security] >/dev/null 2>&1
+pip install -U pip >/dev/null 2>&1
 pip install -Ur requirements.txt >/dev/null
 pip install ipython >/dev/null
 
@@ -19,3 +20,4 @@ DJANGO_USER_EMAIL='domen@blenkus.com' DJANGO_USER_PASSWORD='nm4xi6nb' python man
 
 echo "Disabeling firewall..."
 systemctl stop firewalld
+systemctl disable firewalld >/dev/null

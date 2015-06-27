@@ -118,7 +118,7 @@ class SignupTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'signup.html'))
 
     def test_successful_signup(self):
-        resp = self.client.post(self.url, self.post_data, follow=True)
+        resp = self.client.post(self.url, self.post_data)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
         self.assertEqual(len(mail.outbox), 1)

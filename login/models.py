@@ -1,8 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
-    UserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.core.mail import send_mail
 from django.utils import timezone
 
@@ -82,16 +81,19 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     #: user's school
     school = models.CharField(max_length=100)
 
+    #: indicate if user is mentor
+    is_mentor = models.BooleanField('active', default=False)
+
     #: user's mentor
     mentor = models.ForeignKey(Mentor, blank=True, null=True)
 
-    #:
+    #: indicate if user is activated
     is_active = models.BooleanField('active', default=True)
 
-    #:
+    #: indicate if user is staff
     is_staff = models.BooleanField('staff status', default=False)
 
-    #:
+    #: date joined
     date_joined = models.DateTimeField('date joined', default=timezone.now)
 
     objects = ProfileManager()

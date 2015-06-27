@@ -5,7 +5,6 @@ import os
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Institution, Mentor, Profile
 
@@ -22,6 +21,9 @@ def signup_view(request):
         values = {key: request.POST[key] if key in request.POST
                        else '' for key in fields}
 
+        values['is_mentor'] = ('is_mentor' in request.POST and
+                               request.POST['is_mentor'] == 'on')
+
         for key in required:
             if not values[key]:
                 msg = "Prosim izpolnite vsa polja."
@@ -29,24 +31,18 @@ def signup_view(request):
                     msgs.append(msg)
                 errors.append(key)
 
-        try:
-            # pylint: disable=no-member
-            user = Profile.objects.get(email=values['email'])
+        if Profile.objects.filter(email=values['email']).count() > 0:
             msgs.append("Email naslov že obstaja.")
             errors.append('email')
-        except ObjectDoesNotExist:
-            pass
 
-        if 'school' not in errors:
-            try:
-                Institution.objects.get(name__iexact=values['school'])
-            except ObjectDoesNotExist:
-                msgs.append('Prosim vnesite veljavno ime šole.')
-                errors.append('school')
+        if ('school' not in errors and
+                Institution.objects.filter(name__iexact=values['school']).count() == 0):
+            msgs.append('Prosim vnesite veljavno ime šole.')
+            errors.append('school')
 
         if len(errors) == 0:
             if values['mentor']:
-                values['mentor'] = Mentor.objects.create(name=values['mentor'])
+                values['mentor'] = Mentor.objects.get_or_create(name=values['mentor'])[0]
             else:
                 del values['mentor']
 

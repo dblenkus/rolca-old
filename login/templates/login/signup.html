@@ -3,18 +3,25 @@
 {% block login_content %}
     <h1 class="text-center">Nalaganje fotografij</h1><br>
 
-    <div class="alert alert-warning" role="alert">Ko začnete tipkati ime šole, se pojavi seznam s predlogi, ki jih lahko izberete s klikom.</div>
-    <div class="alert alert-danger" role="alert">Namesto "osnovna šola" in "srednja šola" pišite "OŠ" in "SŠ".</div>
-
     <form method="post" action="{% verbatim %}{{ location }}{% endverbatim %}" role="form" ng-controller="SignupFormController">
         {% csrf_token %}
+
+        <div class="form-group clearfix">
+            <input type="checkbox" name="is_mentor" ng-model="is_mentor" hidden />
+            <span>Prijavite se kot:&nbsp</span>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-class="{active: !is_mentor}" ng-click="is_mentor=false">učenec</label>
+                <label class="btn btn-default" ng-class="{active: is_mentor}" ng-click="is_mentor=true">mentor</label>
+            </div>
+        </div>
+
         <div input-field name="first_name" placeholder="Ime" value="{{ first_name }}" error="{% if 'first_name' in errors %}true{% endif %}"></div>
         <div input-field name="last_name" placeholder="Priimek" value="{{ last_name }}" error="{% if 'last_name' in errors %}true{% endif %}"></div>
         <div input-field name="email" placeholder="Email" value="{{ email }}" error="{% if 'email' in errors %}true{% endif %}"></div>
         <div input-field name="address" placeholder="Naslov" value="{{ address }}" error="{% if 'address' in errors %}true{% endif %}"></div>
         <div input-field name="post" placeholder="Poštna številka in pošta" value="{{ post }}" error="{% if 'post' in errors %}true{% endif %}"></div>
         <div institution name="school" placeholder="Šola" value="{{ school }}" error="{% if 'school' in errors %}true{% endif %}"></div>
-        <div input-field name="mentor" placeholder="Mentor" value="{{ mentor }}"></div>
+        <div input-field name="mentor" placeholder="Mentor" value="{{ mentor }}" ng-hide="is_mentor"></div>
 
         <input class="btn btn-primary btn-block" id="submit-btn" type="submit" value="Naprej">
     </form>

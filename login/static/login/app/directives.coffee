@@ -13,7 +13,6 @@ angular.module 'login.directives', ['ui.bootstrap']
     link: (scope, element, attrs) ->
         scope.getSchool = (val) ->
             School.get(search: val).$promise.then (data) ->
-                console.log data
                 _.pluck data, 'name'
 
         scope.$watch "value", (val, old) ->

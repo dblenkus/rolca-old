@@ -24,17 +24,28 @@ class LoginTestCase(TestCase):
 
         self.post_data = {'email': self.user.email, 'password': 'test_pwd'}
 
+    def activate_user(self):
+        self.user.is_active = True
+        self.user.save()
+
     def test_login_redirect_from_index(self):
         resp = self.client.get('/', follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'login.html'))
 
     def test_login_logout(self):
+        self.activate_user()
+
         self.client.post(reverse('login'), self.post_data)
+        self.assertTrue('_auth_user_id' in self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'], unicode(self.user.pk))
 
         self.client.get(reverse('logout'))
         self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_deny_not_activated(self):
+        self.client.post(reverse('login'), self.post_data)
+        self.assertFalse('_auth_user_id' in self.client.session)
 
     def test_deny_without_email(self):
         del self.post_data['email']
@@ -70,6 +81,8 @@ class LoginTestCase(TestCase):
         self.assertEqual(resp.context['password'], self.post_data['password'])
 
     def test_password_recovery(self):
+        self.activate_user()
+
         resp = self.client.get(reverse('password_reset'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_form.html'))
@@ -118,13 +131,24 @@ class SignupTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'signup.html'))
 
     def test_successful_signup(self):
-        resp = self.client.post(self.url, self.post_data)
+        resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
         self.assertEqual(len(mail.outbox), 1)
 
-        users = Profile.objects.all()  # plyint: disable=no-member
-        self.assertEqual(len(users), 1)
+        self.assertEqual(Profile.objects.count(), 1)
+
+        user = Profile.objects.first()
+        self.assertFalse(user.is_active)
+
+        message = mail.outbox[0]
+        url = message.body.split('http://example.com')[1].split('\n', 1)[0]
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, join('login', 'activation_ok.html'))
+
+        user = Profile.objects.first()
+        self.assertTrue(user.is_active)
 
     def test_empty_post_request(self):
         resp = self.client.post(self.url, {})
@@ -285,7 +309,7 @@ class SignupTestCase(TestCase):
         resp = self.client.post(self.url, self.post_data, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
-        # self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_database(self):
         resp = self.client.post(self.url, self.post_data, follow=True)

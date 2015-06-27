@@ -9,12 +9,27 @@ from django.views.generic import TemplateView
 urlpatterns = patterns(  # pylint: disable=invalid-name
     '',
 
-    url(r'^prijava/$', 'login.views.login_view', name="login"),
-    url(r'^registracija/$', 'login.views.signup_view', name="signup"),
-    url(r'^registracija/potrditev$',
+    # login
+    url(r'^prijava/$', 'login.views.login_view', name='login'),
+
+    # logout
+    url(r'^odjava/$', 'login.views.logout_view', name='logout'),
+
+    # signup
+    url(r'^registracija/$', 'login.views.signup_view', name='signup'),
+    url(r'^registracija/potrditev/$',
         TemplateView.as_view(template_name=os.path.join('login', 'signup_confirm.html')),
-        name="signup_confirm"),
-    url(r'^odjava/$', 'login.views.logout_view', name="logout"),
+        name='signup_confirm'),
+
+    # activation
+    url(r'^aktivacija/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{32})/$',
+        'login.views.activate', name='signup_activation'),
+    url(r'^aktivacija/uspela/$',
+        TemplateView.as_view(template_name=os.path.join('login', 'activation_ok.html')),
+        name='activation_ok'),
+    url(r'^aktivacija/neuspela/$',
+        TemplateView.as_view(template_name=os.path.join('login', 'activation_bad.html')),
+        name='activation_bad'),
 
     # pasword reset
     url(r'^geslo/ponastavi/$', 'django.contrib.auth.views.password_reset',
@@ -32,6 +47,4 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     url(r'^geslo/novo/potrditev/$', 'django.contrib.auth.views.password_reset_complete',
         {'template_name': 'login/password_reset_complete.html'},
         name='password_reset_complete'),
-
-
 )

@@ -1,0 +1,14 @@
+{% autoescape off %}
+Pozdravljeni
+
+zahvaljujemo se vam za registracijo na {{ site_name }}.
+
+Vaši podatki za prijavo so:
+email: {{ email }}
+geslo: {{ password }}
+
+Za aktivacijo računa sledite povezavi: {{ protocol }}://{{ domain }}{% url 'signup_activation' uidb64=uid token=token %}
+
+Lep pozdrav,
+DF Svit
+{% endautoescape %}

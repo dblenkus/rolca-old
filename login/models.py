@@ -1,24 +1,47 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+
 
 from uploader.models import Salon
+
+
+def get_tomorrow():
+    return timezone.now() + timedelta(days=1)
+
+
+def generate_token():
+    return get_random_string(length=32)
+
+
+class Confirmation(models.Model):
+
+    """Tokens for confirming email adresses."""
+
+    #: user's profile
+    profile = models.ForeignKey('Profile')
+
+    #: confirmation token
+    token = models.CharField(max_length=32, default=generate_token)
+
+    #: expiration date
+    expiration = models.DateTimeField(default=get_tomorrow)
 
 
 class ProfileManager(UserManager):
 
     """Custom user manager for `Profile` model."""
 
-    def _create_user(self, email, password, is_staff,
-                     is_superuser, **extra_fields):
+    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         """Creates and saves a User with the given email and password."""
-        now = timezone.now()
         user = self.model(email=email, is_staff=is_staff,  # pylint: disable=no-member
-                          is_active=True, is_superuser=is_superuser,
-                          last_login=now, date_joined=now, **extra_fields)
+                          is_superuser=is_superuser, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)  # pylint: disable=no-member
         return user
@@ -88,7 +111,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     mentor = models.ForeignKey(Mentor, blank=True, null=True)
 
     #: indicate if user is activated
-    is_active = models.BooleanField('active', default=True)
+    is_active = models.BooleanField('active', default=False)
 
     #: indicate if user is staff
     is_staff = models.BooleanField('staff status', default=False)
@@ -116,7 +139,11 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None):
         """Send email to user."""
-        send_mail(subject, message, from_email, [self.email], fail_silently=True)
+        email = EmailMessage(subject, message, from_email, [self.email])
+        email.send(fail_silently=True)
+
+    def get_token(self, password=None):
+        return Confirmation.objects.create(profile=self).token
 
     def is_judge(self):
         """Check if user is judge in any saloon."""

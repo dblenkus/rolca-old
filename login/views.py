@@ -3,10 +3,34 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import os
 
-from django.shortcuts import render, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.template.loader import get_template
+from django.template import Context
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from .models import Institution, Mentor, Profile
+
+from .models import Confirmation, Institution, Mentor, Profile
+
+
+def _send_confirmation(request, user, password):
+    current_site = get_current_site(request)
+    site_name = current_site.name
+    domain = current_site.domain
+
+    context = Context({
+        'domain': domain,
+        'email': user.email,
+        'password': password,
+        'protocol': 'https' if request.is_secure() else 'http',
+        'site_name': site_name,
+        'token': user.get_token(),
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+    })
+    email_body = get_template(os.path.join('login', 'confirmation_email.html'))
+    user.email_user('Registracija', email_body.render(context))
 
 
 def signup_view(request):
@@ -50,16 +74,27 @@ def signup_view(request):
             user = Profile.objects.create_user(password=password, **values)
             user.save()
 
-            user = authenticate(email=values['email'], password=password)
-            login(request, user)
-
-            user.email_user('Thanks for signing up!', 'Thanks')
+            _send_confirmation(request, user, password)
 
             return redirect('signup_confirm')
 
     response = {'msg': '<br>'.join(msgs), 'errors': errors}
     response.update({key: values[key] for key in fields})
     return render(request, os.path.join('login', 'signup.html'), response)
+
+
+def activate(request, uidb64, token):
+    uid = force_text(urlsafe_base64_decode(uidb64))
+
+    try:
+        user = Profile.objects.get(pk=uid)
+        conf = Confirmation.objects.get(profile=user, token=token)
+        user.is_active = True
+        user.save()
+        conf.delete()
+        return redirect('activation_ok')
+    except:
+        return redirect('activation_bad')
 
 
 def login_view(request):

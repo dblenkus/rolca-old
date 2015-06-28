@@ -1,4 +1,7 @@
 cd /webapps/rolcabox/rolca
+sed -i 's/fiap.settings_rolcabox/rolca.settings_rolcabox/' ../bin/activate
+sed -i 's/fiap.settings_rolcabox/rolca.settings_rolcabox/' ../bin/gunicorn_start
+sed -i 's/fiap.wsgi/rolca.wsgi/' ../bin/gunicorn_start
 source ../bin/activate
 
 echo "Updating requirements..."
@@ -20,4 +23,4 @@ DJANGO_USER_EMAIL='domen@blenkus.com' DJANGO_USER_PASSWORD='nm4xi6nb' python man
 
 echo "Disabeling firewall..."
 systemctl stop firewalld
-systemctl disable firewalld >/dev/null
+systemctl disable firewalld >/dev/null 2>&1

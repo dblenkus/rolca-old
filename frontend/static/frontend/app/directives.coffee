@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module 'fiap.directives', []
+angular.module 'rolca.directives', []
 
 .directive 'loadingWheel', ->
     restrict: 'A'

@@ -1,5 +1,5 @@
 """
-Django settings for fiap project.
+Django settings for rolca project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -105,18 +105,18 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
 
-                'fiap.utils.add_ravenJs_DSN',
-                'fiap.utils.add_analytics',
+                'rolca.utils.add_ravenJs_DSN',
+                'rolca.utils.add_analytics',
             ],
         },
     },
 ]
 
-ROOT_URLCONF = 'fiap.urls'
+ROOT_URLCONF = 'rolca.urls'
 
 SITE_ID = 1
 
-WSGI_APPLICATION = 'fiap.wsgi.application'
+WSGI_APPLICATION = 'rolca.wsgi.application'
 
 
 # Internationalization
@@ -208,7 +208,7 @@ LOGGING = {
         },
         'postgres': {
             'level': 'DEBUG',
-            'class': 'fiap.utils.PostgresLogHandler',
+            'class': 'rolca.utils.PostgresLogHandler',
         },
         'null': {
             "class": 'django.utils.log.NullHandler',

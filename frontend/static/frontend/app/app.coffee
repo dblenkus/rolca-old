@@ -1,7 +1,7 @@
 'use strict'
 
-angular.module 'fiap', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'fiap.controllers',
-                        'fiap.filters', 'fiap.services', 'fiap.directives']
+angular.module 'rolca', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'rolca.controllers',
+                        'rolca.filters', 'rolca.services', 'rolca.directives']
 
 .constant('uploadServiceUrl', '/upload/')
 

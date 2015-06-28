@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module 'fiap.controllers', []
+angular.module 'rolca.controllers', []
 
 .controller 'RootController', ['$scope', ($scope) ->
     console.log 1

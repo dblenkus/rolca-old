@@ -33,8 +33,8 @@
 		},
 		{
 			"follow_symlinks": true,
-			"name": "Fiap",
-			"path": "fiap"
+			"name": "Rolca",
+			"path": "rolca"
 		},
 		{
 			"folder_exclude_patterns":
@@ -88,14 +88,14 @@
 		{
 			"file_exclude_patterns":
 			[
-				"fiap.sublime-project"
+				"rolca.sublime-project"
 			],
 			"folder_exclude_patterns":
 			[
 				".*",
 				"ansible",
 				"docs",
-				"fiap",
+				"rolca",
 				"frontend",
 				"jury",
 				"login",

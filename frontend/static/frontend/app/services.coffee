@@ -1,6 +1,6 @@
 "use strict"
 
-angular.module "fiap.services", ["ngResource"]
+angular.module "rolca.services", ["ngResource"]
 
 .factory "Salon", ["$resource", ($resource) ->
     $resource "/api/v1/salon/:id/:func", id: "@id",

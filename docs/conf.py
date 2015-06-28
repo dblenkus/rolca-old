@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# fiap documentation build configuration file, created by
+# rolca documentation build configuration file, created by
 # sphinx-quickstart on Thu May 22 22:37:46 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -21,7 +21,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'fiap.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'rolca.settings'
 
 # -- General configuration ------------------------------------------------
 
@@ -53,7 +53,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'fiap'
+project = 'rolca'
 copyright = u'2014, Domen Blenkuš'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -186,7 +186,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'fiapdoc'
+htmlhelp_basename = 'rolcadoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -206,7 +206,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'fiap.tex', 'fiap Documentation',
+    ('index', 'rolca.tex', 'rolca Documentation',
      u'Domen Blenkuš', 'manual'),
 ]
 
@@ -236,7 +236,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'fiap', 'fiap Documentation',
+    ('index', 'rolca', 'rolca Documentation',
      [u'Domen Blenkuš'], 1)
 ]
 
@@ -250,8 +250,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'fiap', 'fiap Documentation',
-     u'Domen Blenkuš', 'fiap', 'One line description of project.',
+    ('index', 'rolca', 'rolca Documentation',
+     u'Domen Blenkuš', 'rolca', 'One line description of project.',
      'Miscellaneous'),
 ]
 

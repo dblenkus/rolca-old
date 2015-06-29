@@ -7,9 +7,12 @@ from os.path import join
 from django.test import TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
 
 from .forms import ProfileCreationForm  # , ProfileChangeForm
-from .models import Institution, Mentor, Profile
+from .models import Confirmation, Institution, Mentor, Profile
 
 
 class LoginTestCase(TestCase):
@@ -149,6 +152,22 @@ class SignupTestCase(TestCase):
 
         user = Profile.objects.first()
         self.assertTrue(user.is_active)
+
+    def test_invalid_activation_token(self):
+        bad_token = "1" * 32
+
+        del self.post_data['mentor']
+        user = Profile.objects.create(**self.post_data)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+        resp = self.client.get(reverse('signup_activation',
+                                       kwargs={'uidb64': uidb64, 'token': bad_token}),
+                               follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, join('login', 'activation_bad.html'))
+
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
 
     def test_empty_post_request(self):
         resp = self.client.post(self.url, {})
@@ -422,3 +441,25 @@ class InstitutionModelTestCase(TestCase):
 
     def test_unicode(self):
         self.assertEqual(unicode(self.institution), self.institution_data['name'])
+
+
+class ConfirmationModelTestCase(TestCase):
+    def setUp(self):
+        user_data = {
+            'first_name': "Janez",
+            'last_name': "Novak",
+            'email': "janez.novak@example.com",
+            'address': "Zgornji Kašelj 42",
+            'post': "1234 Zgornji Kašelj",
+            'school': "OS Zgornji Kašelj",
+        }
+        user = Profile.objects.create(**user_data)
+
+        self.confirmation_data = {
+            'profile': user,
+            'token': '123',
+        }
+        self.conf = Confirmation.objects.create(**self.confirmation_data)
+
+    def test_unicode(self):
+        self.assertEqual(unicode(self.conf), "uid:1 token:123")

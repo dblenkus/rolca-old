@@ -83,7 +83,7 @@ def signup_view(request):
     return render(request, os.path.join('login', 'signup.html'), response)
 
 
-def activate(request, uidb64, token):
+def activate(request, uidb64, token):  # pylint: disable=unused-argument
     uid = force_text(urlsafe_base64_decode(uidb64))
 
     try:
@@ -93,7 +93,7 @@ def activate(request, uidb64, token):
         user.save()
         conf.delete()
         return redirect('activation_ok')
-    except:
+    except (Profile.DoesNotExist, Confirmation.DoesNotExist):
         return redirect('activation_bad')
 
 

@@ -10,7 +10,7 @@ from login.models import Profile
 class FrontendSeleniumTest(LiveServerTestCase):
     def setUp(self):
         Profile.objects.create_superuser(email='test@blenkus.com',
-                                             password='test_pwd')
+                                         password='test_pwd')
 
         self.client = webdriver.Chrome('/Applications/chromedriver')
         super(FrontendSeleniumTest, self).setUp()

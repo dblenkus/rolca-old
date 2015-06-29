@@ -33,6 +33,10 @@ class Confirmation(models.Model):
     #: expiration date
     expiration = models.DateTimeField(default=get_tomorrow)
 
+    def __unicode__(self):
+        # pylint: disable=no-member
+        return "uid:{} token:{}".format(self.profile.pk, self.token)
+
 
 class ProfileManager(UserManager):
 
@@ -142,7 +146,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
         email = EmailMessage(subject, message, from_email, [self.email])
         email.send(fail_silently=True)
 
-    def get_token(self, password=None):
+    def get_token(self):
         return Confirmation.objects.create(profile=self).token
 
     def is_judge(self):

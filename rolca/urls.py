@@ -6,7 +6,7 @@ from django.contrib import admin
 
 from rest_framework import routers
 
-from login.api import ProfileViewSet, InstitutionViewSet
+from login.views import ProfileViewSet, InstitutionViewSet
 from uploader.api import PhotoViewSet, SalonViewSet
 from jury.api import RatingViewSet
 # from login.api import ProfileResource, InstitutionResource

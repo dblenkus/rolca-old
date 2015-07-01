@@ -11,8 +11,22 @@ from django.template import Context
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
+from rest_framework import viewsets, filters
 
 from .models import Confirmation, Institution, Mentor, Profile
+from .serializers import InstitutionSerializer, ProfileSerializer
+
+
+class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()  # pylint: disable=no-member
+    serializer_class = ProfileSerializer
+
+
+class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Institution.objects.filter(enabled=True)
+    serializer_class = InstitutionSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 
 def _send_confirmation(request, user, password):

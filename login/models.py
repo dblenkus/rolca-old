@@ -73,7 +73,7 @@ class Mentor(models.Model):
                                   related_name='mentor_profile')
 
     def __unicode__(self):
-        return self.name if self.name else self.reference
+        return self.name if self.name else unicode(self.reference)
 
 
 class Profile(AbstractBaseUser, PermissionsMixin):
@@ -130,6 +130,12 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         verbose_name = 'user'
+
+    def save(self, *args, **kwargs):
+        if not self.email:
+            import random
+            self.email = '{}.{}@example.com'.format(random.random(), random.random())
+        super(Profile, self).save(*args, **kwargs)
 
     def get_full_name(self):
         """Return user's full name."""

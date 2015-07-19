@@ -10,26 +10,26 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
+from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+
 
 from .forms import ProfileCreationForm  # , ProfileChangeForm
 from .models import Confirmation, Institution, Mentor, Profile
+from .views import ProfileViewSet
+
+
+MESSAGES = {
+    u'NOT_FOUND': u'Not found.',
+    u'NO_PERMISSION': u'You do not have permission to perform this action.',
+}
 
 
 class LoginTestCase(TestCase):
+    fixtures = ['profiles.yaml']
+
     def setUp(self):
-        mentor = Mentor.objects.create(name="Franc Horvat")
-        self.user = Profile.objects.create_user(
-            first_name="Janez", last_name="Novak", mentor=mentor,
-            email="janez.novak@example.com", address="Zgornji Kašelj 42",
-            post="1234 Zgornji Kašelj", school="OS Zgornji Kašelj")
-        self.user.set_password('test_pwd')
-        self.user.save()
-
-        self.post_data = {'email': self.user.email, 'password': 'test_pwd'}
-
-    def activate_user(self):
-        self.user.is_active = True
-        self.user.save()
+        self.url = reverse('login')
+        self.post_data = {'email': 'franc.horvat@example.com', 'password': 'test_pwd'}
 
     def test_login_redirect_from_index(self):
         resp = self.client.get('/', follow=True)
@@ -37,22 +37,21 @@ class LoginTestCase(TestCase):
         self.assertTemplateUsed(resp, join('login', 'login.html'))
 
     def test_login_logout(self):
-        self.activate_user()
-
-        self.client.post(reverse('login'), self.post_data)
+        self.client.post(self.url, self.post_data)
         self.assertTrue('_auth_user_id' in self.client.session)
-        self.assertEqual(self.client.session['_auth_user_id'], unicode(self.user.pk))
+        self.assertEqual(self.client.session['_auth_user_id'], u'2')
 
         self.client.get(reverse('logout'))
         self.assertNotIn('_auth_user_id', self.client.session)
 
     def test_deny_not_activated(self):
-        self.client.post(reverse('login'), self.post_data)
+        Profile.objects.filter(pk=2).update(is_active=False)
+        self.client.post(self.url, self.post_data)
         self.assertFalse('_auth_user_id' in self.client.session)
 
     def test_deny_without_email(self):
         del self.post_data['email']
-        resp = self.client.post(reverse('login'), self.post_data)
+        resp = self.client.post(self.url, self.post_data)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'login.html'))
         self.assertIn('email', resp.context['errors'])
@@ -63,7 +62,7 @@ class LoginTestCase(TestCase):
 
     def test_deny_without_password(self):
         del self.post_data['password']
-        resp = self.client.post(reverse('login'), self.post_data)
+        resp = self.client.post(self.url, self.post_data)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'login.html'))
         self.assertIn('password', resp.context['errors'])
@@ -74,7 +73,7 @@ class LoginTestCase(TestCase):
 
     def test_deny_with_wrong_password(self):
         self.post_data['password'] = 'wrong_pwd'
-        resp = self.client.post(reverse('login'), self.post_data)
+        resp = self.client.post(self.url, self.post_data)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'login.html'))
         self.assertIn('password', resp.context['errors'])
@@ -84,14 +83,14 @@ class LoginTestCase(TestCase):
         self.assertEqual(resp.context['password'], self.post_data['password'])
 
     def test_password_recovery(self):
-        self.activate_user()
-
         resp = self.client.get(reverse('password_reset'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_form.html'))
 
         resp = self.client.post(
-            reverse('password_reset'), {'email': self.user.email}, follow=True)
+            reverse('password_reset'),
+            {'email': 'franc.horvat@example.com'},
+            follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_done.html'))
 
@@ -108,7 +107,8 @@ class LoginTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'password_reset_complete.html'))
 
-        u = Profile.objects.all()[0]  # plyint: disable=no-member
+        # plyint: disable=no-member
+        u = Profile.objects.get(email='franc.horvat@example.com')
         self.assertTrue(u.check_password('new_pwd'))
 
 
@@ -349,11 +349,9 @@ class SignupTestCase(TestCase):
 
 class FormsTestCase(TestCase):
     def setUp(self):
-        mentor = Mentor.objects.create(name="Franc Horvat")
         self.user_data = {
             'first_name': "Janez",
             'last_name': "Novak",
-            'mentor': mentor,
             'email': "janez.novak@example.com",
             'address': "Zgornji Kašelj 42",
             'post': "1234 Zgornji Kašelj",
@@ -431,6 +429,183 @@ class ProfileModelTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
+class ProfileAPITestCase(APITestCase):  # pylint: disable=too-many-instance-attributes
+    fixtures = ['profiles.yaml']
+
+    def setUp(self):
+        super(ProfileAPITestCase, self).setUp()
+
+        self.factory = APIRequestFactory()
+
+        self.user1 = Profile.objects.get(pk=1)
+        self.user2 = Profile.objects.get(pk=2)
+
+        self.list_view = ProfileViewSet.as_view({
+            'get': 'list',
+            'post': 'create',
+        })
+        self.list_url = reverse('rolca-api:user-list')
+
+        self.detail_view = ProfileViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy',
+        })
+        self.detail_url = reverse('rolca-api:user-detail', kwargs={'pk': 1})
+
+        self.data = {'first_name': 'Osama', 'last_name': 'Bin Laden'}
+
+    def _get_list(self, user=None):
+        request = self.factory.get(self.list_url)
+        if user:
+            force_authenticate(request, user)
+        resp = self.list_view(request)
+        resp.render()
+        return resp
+
+    def _post(self, data, user=None):
+        request = self.factory.post(self.list_url, data=data)
+        if user:
+            force_authenticate(request, user)
+        resp = self.list_view(request)
+        resp.render()
+        return resp
+
+    def _get_detail(self, pk, user=None):
+        request = self.factory.get(self.detail_url)
+        if user:
+            force_authenticate(request, user)
+        resp = self.detail_view(request, pk=pk)
+        resp.render()
+        return resp
+
+    def _put(self, pk, data, user=None):
+        request = self.factory.put(self.detail_url, data=data)
+        if user:
+            force_authenticate(request, user)
+        resp = self.detail_view(request, pk=pk)
+        resp.render()
+        return resp
+
+    def _patch(self, pk, data, user=None):
+        request = self.factory.patch(self.detail_url, data=data)
+        if user:
+            force_authenticate(request, user)
+        resp = self.detail_view(request, pk=pk)
+        resp.render()
+        return resp
+
+    def _delete(self, pk, user=None):
+        request = self.factory.delete(self.detail_url)
+        if user:
+            force_authenticate(request, user)
+        resp = self.detail_view(request, pk=pk)
+        resp.render()
+        return resp
+
+    def test_get_list(self):
+        # public user
+        resp = self._get_list()
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 0)
+
+        # normal user
+        resp = self._get_list(self.user1)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 1)
+
+        # mentor
+        resp = self._get_list(self.user2)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 2)
+
+    def test_post(self):
+        # public user
+        resp = self._post(self.data)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # normal user
+        resp = self._post(self.data, self.user1)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NO_PERMISSION'])
+
+        # mentor
+        resp = self._post(self.data, self.user2)
+        self.assertEqual(resp.status_code, 201)
+
+    def test_get_detail(self):
+        # public user
+        resp = self._get_detail(1)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # normal user
+        resp = self._get_detail(1, self.user1)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data[u'id'], 1)
+        resp = self._get_detail(2, self.user1)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # mentor
+        resp = self._get_detail(1, self.user2)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data[u'id'], 1)
+        resp = self._get_detail(2, self.user2)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data[u'id'], 2)
+
+    def test_put(self):
+        # public user
+        resp = self._put(1, self.data)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # normal user
+        resp = self._put(1, self.data, self.user1)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NO_PERMISSION'])
+
+        # mentor
+        resp = self._put(1, self.data, self.user2)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_patch(self):
+        # public user
+        resp = self._patch(1, self.data)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # normal user
+        resp = self._patch(1, self.data, self.user1)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NO_PERMISSION'])
+
+        # mentor
+        resp = self._patch(1, self.data, self.user2)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_delete(self):
+        # public user
+        resp = self._delete(1)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NOT_FOUND'])
+
+        # normal user
+        resp = self._delete(1, self.user1)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NO_PERMISSION'])
+
+        # mentor
+        resp = self._delete(1, self.user2)
+        self.assertEqual(resp.status_code, 204)
+        resp = self._delete(2, self.user2)
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.data[u'detail'], MESSAGES['NO_PERMISSION'])
+
+
 class InstitutionModelTestCase(TestCase):
     def setUp(self):
         self.institution_data = {
@@ -441,6 +616,10 @@ class InstitutionModelTestCase(TestCase):
 
     def test_unicode(self):
         self.assertEqual(unicode(self.institution), self.institution_data['name'])
+
+
+class InstitutionAPITestCase(APITestCase):
+    pass
 
 
 class ConfirmationModelTestCase(TestCase):

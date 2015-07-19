@@ -9,12 +9,10 @@ from rest_framework import routers
 from login.views import ProfileViewSet, InstitutionViewSet
 from uploader.api import PhotoViewSet, SalonViewSet
 from jury.api import RatingViewSet
-# from login.api import ProfileResource, InstitutionResource
-# from uploader.api import PhotoResource, SalonResource, ThemeResource, FileResource
 
 
 router = routers.DefaultRouter()
-router.register(r'user', ProfileViewSet)
+router.register(r'user', ProfileViewSet, base_name='user')
 router.register(r'school', InstitutionViewSet)
 router.register(r'salon', SalonViewSet)
 router.register(r'photo', PhotoViewSet)
@@ -25,7 +23,7 @@ urlpatterns = patterns(
 
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/', include(router.urls, namespace="rolca-api")),
     url(r'^delavnice/', include('workshops.urls')),
     url(r'^rezultati/', include('results.urls')),
     url(r'^upload/', include('uploader.urls')),

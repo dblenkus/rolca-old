@@ -15,14 +15,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
-                ('email', models.EmailField(max_length=75)),
+                ('email', models.EmailField(max_length=254)),
                 ('institution', models.BooleanField(default=False)),
                 ('institution_name', models.CharField(max_length=100, blank=True)),
                 ('n_of_applicants', models.IntegerField()),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Workshop',
@@ -36,14 +33,10 @@ class Migration(migrations.Migration):
                 ('end_date', models.DateTimeField()),
                 ('instructor', models.CharField(max_length=100)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='application',
             name='workshop',
             field=models.ForeignKey(to='workshops.Workshop'),
-            preserve_default=True,
         ),
     ]

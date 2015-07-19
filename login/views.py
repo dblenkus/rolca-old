@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import os
 
+from django.db.models import Q
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -11,15 +12,37 @@ from django.template import Context
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from rest_framework import viewsets, filters
+from rest_framework import exceptions, filters, viewsets
 
 from .models import Confirmation, Institution, Mentor, Profile
+from .permissions import ProfilePermissions
 from .serializers import InstitutionSerializer, ProfileSerializer
 
 
-class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Profile.objects.all()  # pylint: disable=no-member
+class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
+    permission_classes = (ProfilePermissions,)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # `mentor_profile__reference must be `Profile` instance, not
+        # `AnonymousUser`
+        if not user.is_authenticated():
+            return Profile.objects.none()
+
+        if user.is_staff or user.is_superuser:
+            return Profile.objects.all()
+
+        return Profile.objects.filter(Q(pk=user.pk) | Q(mentor__reference=user))
+
+    def create(self, request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            raise exceptions.NotFound
+        if not request.user.is_mentor:
+            raise exceptions.PermissionDenied
+
+        return super(ProfileViewSet, self).create(request, *args, **kwargs)
 
 
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -69,12 +92,12 @@ def signup_view(request):
                     msgs.append(msg)
                 errors.append(key)
 
-        if Profile.objects.filter(email=values['email']).count() > 0:
+        if Profile.objects.filter(email=values['email']).exists():
             msgs.append("Email naslov že obstaja.")
             errors.append('email')
 
         if ('school' not in errors and
-                Institution.objects.filter(name__iexact=values['school']).count() == 0):
+                not Institution.objects.filter(name__iexact=values['school']).exists()):
             msgs.append('Prosim vnesite veljavno ime šole.')
             errors.append('school')
 
@@ -100,15 +123,13 @@ def signup_view(request):
 def activate(request, uidb64, token):  # pylint: disable=unused-argument
     uid = force_text(urlsafe_base64_decode(uidb64))
 
-    try:
-        user = Profile.objects.get(pk=uid)
-        conf = Confirmation.objects.get(profile=user, token=token)
-        user.is_active = True
-        user.save()
-        conf.delete()
-        return redirect('activation_ok')
-    except (Profile.DoesNotExist, Confirmation.DoesNotExist):
+    if not Confirmation.objects.filter(profile=uid, token=token).exists():
         return redirect('activation_bad')
+
+    Profile.objects.filter(pk=uid).update(is_active=True)
+    Confirmation.objects.filter(profile=uid).delete()
+
+    return redirect('activation_ok')
 
 
 def login_view(request):

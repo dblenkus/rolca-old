@@ -109,7 +109,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     school = models.CharField(max_length=100)
 
     #: indicate if user is mentor
-    is_mentor = models.BooleanField('active', default=False)
+    is_mentor = models.BooleanField(default=False)
 
     #: user's mentor
     mentor = models.ForeignKey(Mentor, blank=True, null=True)
@@ -133,8 +133,13 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         if not self.email:
-            import random
-            self.email = '{}.{}@example.com'.format(random.random(), random.random())
+            unique = name = '{}.{}'.format(self.first_name, self.last_name)
+            i = 1
+            while Profile.objects.filter(email='{}@example.com'.format(unique)).exists():
+                i += 1
+                unique = '{}.{}'.format(name, str(i))
+            self.email = '{}@example.com'.format(unique)
+
         super(Profile, self).save(*args, **kwargs)
 
     def get_full_name(self):

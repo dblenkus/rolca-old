@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('address', models.CharField(max_length=100)),
                 ('post', models.CharField(max_length=100)),
                 ('school', models.CharField(max_length=100)),
-                ('is_mentor', models.BooleanField(default=False, verbose_name='active')),
+                ('is_mentor', models.BooleanField(default=False)),
                 ('is_active', models.BooleanField(default=False, verbose_name='active')),
                 ('is_staff', models.BooleanField(default=False, verbose_name='staff status')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),

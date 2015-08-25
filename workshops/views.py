@@ -2,7 +2,9 @@ import os
 from datetime import datetime
 
 from django.shortcuts import render_to_response, HttpResponseRedirect, render
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.core.validators import validate_email
 from django.template import RequestContext
 
 from .models import Application, Workshop
@@ -58,6 +60,12 @@ def application(request):
                 if ws.limit and ws.limit - ws.count() < int(values['n_of_applicants']):
                     msgs.append("Ni dovolj prostih mest.")
                     typ |= 2 ** 5
+
+        try:
+            validate_email(values['email'])
+        except ValidationError:
+            msgs.append("Vnesite veljaven email naslov.")
+            typ |= 2 ** 2
 
         if not typ:
             for workshop in workshops:

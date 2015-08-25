@@ -132,6 +132,22 @@ class WorkshopsTestCase(TestCase):
         self.assertEqual(context['selected'][self.w[0].pk], True)
         self.assertEqual(context['selected'][self.w[1].pk], False)
 
+    def test_invalid_email(self):
+        data = self.post_data
+        data['email'] = 'thisisnotvalid.com'
+        resp = self.client.post(self.url, data=data)
+        context = resp.context
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, join('workshops', 'application.html'))
+        self.assertEqual(context['type'], 4)
+        self.assertNotEqual(context['msg'], '')
+
+        self.assertEqual(context['name'], data['name'])
+        self.assertEqual(context['email'], data['email'])
+        self.assertEqual(context['institution_name'], data['institution_name'])
+        self.assertEqual(context['selected'][self.w[0].pk], True)
+        self.assertEqual(context['selected'][self.w[1].pk], False)
+
     def test_missing_institution_name(self):
         data = self.post_data
         del data['institution_name']

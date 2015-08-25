@@ -12,7 +12,7 @@ from django.template import Context
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from rest_framework import exceptions, filters, viewsets
+from rest_framework import exceptions, filters, permissions, viewsets
 
 from .models import Confirmation, Institution, Mentor, Profile
 from .permissions import ProfilePermissions
@@ -47,6 +47,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Institution.objects.filter(enabled=True)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = InstitutionSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)

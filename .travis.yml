@@ -1,0 +1,20 @@
+language: python
+
+python:
+  - "2.7"
+
+services:
+  - redis-server
+
+env:
+- DJANGO_SETTINGS_MODULE="rolca.settings_travis"
+
+before_install:
+  - pip install codecov
+
+install: "pip install -r requirements.txt"
+
+script: coverage run manage.py test
+
+after_success:
+  - codecov --token=34a78448-e044-4110-a56c-f7e1ae2f838d

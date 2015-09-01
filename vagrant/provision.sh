@@ -1,8 +1,5 @@
 cd /webapps/rolcabox/rolca
-sed -i 's/fiap.settings_rolcabox/rolca.settings_rolcabox/' ../bin/activate
-sed -i 's/fiap.settings_rolcabox/rolca.settings_rolcabox/' ../bin/gunicorn_start
-sed -i 's/fiap.wsgi/rolca.wsgi/' ../bin/gunicorn_start
-source ../bin/activate
+source ../.venv/bin/activate
 
 echo "Updating requirements..."
 yum install -y libffi-devel >/dev/null 2>&1

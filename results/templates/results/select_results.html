@@ -10,6 +10,8 @@
     <h1>Rezultati</h1>
     {% for salon in salons %}
         <a href="{% url 'select_results' %}{{salon.pk}}" class="btn btn-default btn-lg" style="margin-bottom: 15px">{{salon.title}}</a><br>
+    {% empty %}
+        Rezultati bodo objavljeni 16. 11. 2015.
     {% endfor %}
 </div>
 {% endblock content %}

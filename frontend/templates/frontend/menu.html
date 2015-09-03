@@ -1,17 +1,11 @@
+<a href="{% url 'aplication' %}" class="btn btn-default menu-btn">Delavnice</a>
+<a href="{% url 'notices' %}" class="btn btn-default menu-btn">Razpisi</a>
+<!--
+<a href="/#/salon" class="btn btn-default menu-btn">Naloži fotografije</a>
+<a href="{% url 'list_select' %}" class="btn btn-default menu-btn">Seznam sodelujočih</a>
+<a href="{% url 'select_results' %}" class="btn btn-default menu-btn">Rezultati</a>
+<a href="{% url 'select_school_results' %}" class="btn btn-default menu-btn">Rezultati po šolah</a>
+-->
 {% if user.id %}
-    <a href="{% url 'aplication' %}" class="btn btn-default menu-btn">Delavnice</a>
-    <a href="{% url 'notices' %}" class="btn btn-default menu-btn">Razpisi</a>
-    <!--<a href="{% url 'list_select' %}" class="btn btn-default menu-btn">Seznam sodelujočih</a>-->
-    <a href="{% url 'select_results' %}" class="btn btn-default menu-btn">Rezultati</a>
-    <a href="{% url 'select_school_results' %}" class="btn btn-default menu-btn">Rezultati po šolah</a>
-    <!--<a href="/#/salon" class="btn btn-default menu-btn">Naloži fotografije</a>-->
-    <!--<a href="/user/logout" class="btn btn-default menu-btn">Odjava</a>-->
-{% else %}
-    <a href="{% url 'aplication' %}" class="btn btn-default menu-btn">Delavnice</a>
-    <a href="{% url 'notices' %}" class="btn btn-default menu-btn">Razpisi</a>
-    <!--<a href="{% url 'list_select' %}" class="btn btn-default menu-btn">Seznam sodelujočih</a>-->
-    <a href="{% url 'select_results' %}" class="btn btn-default menu-btn">Rezultati</a>
-    <a href="{% url 'select_school_results' %}" class="btn btn-default menu-btn">Rezultati po šolah</a>
-    <!--<a href="/user/login" class="btn btn-default menu-btn">Prijava</a>-->
-    <!--<a href="/user/signup" class="btn btn-default menu-btn">Registracija</a>-->
+    <a href="/user/logout" class="btn btn-default menu-btn">Odjava</a>
 {% endif %}

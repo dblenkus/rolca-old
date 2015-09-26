@@ -93,8 +93,11 @@ def signup_view(request):
                     msgs.append(msg)
                 errors.append(key)
 
-        if Profile.objects.filter(email=values['email']).exists():
-            msgs.append("Email naslov že obstaja.")
+        if Profile.objects.filter(
+            first_name=values['first_name'], last_name=values['last_name'],
+            email=values['email']
+        ).exists():
+            msgs.append("Uporabnik že obstaja.")
             errors.append('email')
 
         if ('school' not in errors and
@@ -108,13 +111,24 @@ def signup_view(request):
             else:
                 del values['mentor']
 
+            username = values['email'].split('@')[0].replace('.', '').replace('_', '')
+            n = 0
+            while Profile.objects.filter(username=username).exists():
+                n += 1
+                username = '{}_{}'.format(username.split('_')[0], n)
+
             password = Profile.objects.make_random_password()
-            user = Profile.objects.create_user(password=password, **values)
+            user = Profile.objects.create_user(username=username, password=password,
+                                               **values)
+            user.is_active = True
             user.save()
 
-            _send_confirmation(request, user, password)
+            user = authenticate(username=username, password=password)
+            login(request, user)
 
-            return redirect('signup_confirm')
+            # _send_confirmation(request, user, password)
+
+            return redirect('upload_app')
 
     response = {'msg': '<br>'.join(msgs), 'errors': errors}
     response.update({key: values[key] for key in fields})
@@ -170,4 +184,4 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('index')

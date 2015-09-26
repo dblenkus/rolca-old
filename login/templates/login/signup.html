@@ -5,16 +5,6 @@
 
     <form method="post" action="{% verbatim %}{{ location }}{% endverbatim %}" role="form" ng-controller="SignupFormController">
         {% csrf_token %}
-
-        <div class="form-group clearfix">
-            <input type="checkbox" name="is_mentor" ng-model="is_mentor" hidden />
-            <span>Prijavite se kot:&nbsp</span>
-            <div class="btn-group">
-                <label class="btn btn-default" ng-class="{active: !is_mentor}" ng-click="is_mentor=false">učenec</label>
-                <label class="btn btn-default" ng-class="{active: is_mentor}" ng-click="is_mentor=true">mentor</label>
-            </div>
-        </div>
-
         <div input-field name="first_name" placeholder="Ime" value="{{ first_name }}" error="{% if 'first_name' in errors %}true{% endif %}"></div>
         <div input-field name="last_name" placeholder="Priimek" value="{{ last_name }}" error="{% if 'last_name' in errors %}true{% endif %}"></div>
         <div input-field name="email" placeholder="Email" value="{{ email }}" error="{% if 'email' in errors %}true{% endif %}"></div>

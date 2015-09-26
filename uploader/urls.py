@@ -4,10 +4,10 @@ from django.views.generic import TemplateView
 urlpatterns = patterns(  # pylint: disable=invalid-name
     '',
 
-    # url(r'^$', 'uploader.views.upload_app', name="upload_app"),
-    # url(r'^potrditev$',
-    #     TemplateView.as_view(template_name='uploader/upload_confirm.html'),
-    #     name="upload_confirm"),
+    url(r'^$', 'uploader.views.upload_app', name="upload_app"),
+    url(r'^potrditev$',
+        TemplateView.as_view(template_name='uploader/upload_confirm.html'),
+        name="upload_confirm"),
 
     # url(r'^$', 'uploader.views.upload', name="upload"),
 

@@ -4,7 +4,7 @@
     <form method="post" action="{% verbatim %}{{ location }}{% endverbatim %}" role="form" ng-controller="LoginFormController">
         {% csrf_token %}
 
-        <div input-field name="email" placeholder="Email" value="{{ email }}" error="{% if 'email' in errors %}true{% endif %}"></div>
+        <div input-field name="username" placeholder="Uporabniško ime" value="{{ username }}" error="{% if 'username' in errors %}true{% endif %}"></div>
         <div input-field name="password" placeholder="Geslo" value="{{ password }}" error="{% if 'password' in errors %}true{% endif %}" type="password"></div>
 
         <input class="btn btn-primary btn-block" id="submit-btn" type="submit" value="Prijava">

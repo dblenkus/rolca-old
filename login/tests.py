@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from os.path import join
 
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_bytes
@@ -28,8 +29,10 @@ class LoginTestCase(TestCase):
     fixtures = ['profiles.yaml']
 
     def setUp(self):
+        self.username_field = get_user_model().USERNAME_FIELD
+
         self.url = reverse('login')
-        self.post_data = {'email': 'franc.horvat@example.com', 'password': 'test_pwd'}
+        self.post_data = {self.username_field: 'franchorvat', 'password': 'test_pwd'}
 
     def test_login_redirect_from_index(self):
         resp = self.client.get('/', follow=True)
@@ -49,15 +52,15 @@ class LoginTestCase(TestCase):
         self.client.post(self.url, self.post_data)
         self.assertFalse('_auth_user_id' in self.client.session)
 
-    def test_deny_without_email(self):
-        del self.post_data['email']
+    def test_deny_without_username(self):
+        del self.post_data[self.username_field]
         resp = self.client.post(self.url, self.post_data)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, join('login', 'login.html'))
-        self.assertIn('email', resp.context['errors'])
+        self.assertIn(self.username_field, resp.context['errors'])
         self.assertNotEqual(resp.context['msg'], '')
 
-        self.assertEqual(resp.context['email'], '')
+        self.assertEqual(resp.context[self.username_field], '')
         self.assertEqual(resp.context['password'], self.post_data['password'])
 
     def test_deny_without_password(self):
@@ -68,7 +71,8 @@ class LoginTestCase(TestCase):
         self.assertIn('password', resp.context['errors'])
         self.assertNotEqual(resp.context['msg'], '')
 
-        self.assertEqual(resp.context['email'], self.post_data['email'])
+        self.assertEqual(
+            resp.context[self.username_field], self.post_data[self.username_field])
         self.assertEqual(resp.context['password'], '')
 
     def test_deny_with_wrong_password(self):
@@ -79,7 +83,8 @@ class LoginTestCase(TestCase):
         self.assertIn('password', resp.context['errors'])
         self.assertNotEqual(resp.context['msg'], '')
 
-        self.assertEqual(resp.context['email'], self.post_data['email'])
+        self.assertEqual(
+            resp.context[self.username_field], self.post_data[self.username_field])
         self.assertEqual(resp.context['password'], self.post_data['password'])
 
     def test_password_recovery(self):

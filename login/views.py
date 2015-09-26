@@ -136,21 +136,21 @@ def activate(request, uidb64, token):  # pylint: disable=unused-argument
 def login_view(request):
     msgs = []
     errors = []
-    email = ''
+    username = ''
     password = ''
 
     if request.method == 'POST':
-        email = request.POST['email'] if 'email' in request.POST else ''
+        username = request.POST['username'] if 'username' in request.POST else ''
         password = request.POST['password'] if 'password' in request.POST else ''
 
-        if not password:
-            msgs.append("Prosim vpišite email.")
-            errors.append('password')
-        elif not email:
+        if not username:
+            msgs.append("Prosim vpišite uporabniško ime.")
+            errors.append('username')
+        elif not password:
             msgs.append("Prosim vpišite geslo.")
-            errors.append('email')
+            errors.append('password')
         else:
-            user = authenticate(email=email, password=password)
+            user = authenticate(username=username, password=password)
 
             if user is not None:
                 if user.is_active:
@@ -160,10 +160,10 @@ def login_view(request):
                 else:
                     msgs.append("Vaš račun je bil onemogočen.")
             else:
-                msgs.append("Email in geslo se ne ujemata.")
-                errors.extend(['email', 'password'])
+                msgs.append("Uporabniško ime in geslo se ne ujemata.")
+                errors.extend(['username', 'password'])
 
-    response = {'msg': '<br>'.join(msgs), 'errors': errors, 'email': email,
+    response = {'msg': '<br>'.join(msgs), 'errors': errors, 'username': username,
                 'password': password}
     return render(request, os.path.join('login', 'login.html'), response)
 

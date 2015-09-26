@@ -3,6 +3,7 @@
 - model: "login.profile"
   pk: 1
   fields:
+    username: "janeznovak"
     first_name: "Janez"
     last_name: "Novak"
     is_active: true
@@ -16,12 +17,13 @@
     user_permissions: []
     post: ""
     password: "pbkdf2_sha256$20000$9Qupeu8C3lkS$UlOHL5XU+SkNoJnUsESi836pr97Z9xL/rkeLFZrhs8Q="  # test_pwd
-    email: ""
+    email: "janez.novak@example.com"
     date_joined: "2015-01-01T15:00:00.000Z"
 
 - model: "login.profile"
   pk: 2
   fields:
+    username: "franchorvat"
     first_name: "Franc"
     last_name: "Horvat"
     is_mentor: true

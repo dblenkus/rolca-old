@@ -91,13 +91,16 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     """
 
     #: user's email
-    email = models.EmailField('email address', unique=True)
+    email = models.EmailField('email address')
 
     #: user's first name
     first_name = models.CharField(max_length=30)
 
     #: user's last name
     last_name = models.CharField(max_length=30)
+
+    #: username
+    username = models.CharField(max_length=30, unique=True)
 
     #: user's address
     address = models.CharField(max_length=100)
@@ -125,7 +128,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     objects = ProfileManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     class Meta:

@@ -134,17 +134,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'user'
 
-    def save(self, *args, **kwargs):
-        if not self.email:
-            unique = name = '{}.{}'.format(self.first_name, self.last_name)
-            i = 1
-            while Profile.objects.filter(email='{}@example.com'.format(unique)).exists():
-                i += 1
-                unique = '{}.{}'.format(name, str(i))
-            self.email = '{}@example.com'.format(unique)
-
-        super(Profile, self).save(*args, **kwargs)
-
     def get_full_name(self):
         """Return user's full name."""
         full_name = u'{} {}'.format(self.first_name, self.last_name)

@@ -19,6 +19,8 @@ DATABASES = {
     }
 }
 
+BROKER_URL = "amqp://rolca:b4bxje@localhost:5672/rolca_broker"
+
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -38,4 +40,4 @@ MEDIA_ROOT = os.path.normpath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
 # email settings
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+CELERY_EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'

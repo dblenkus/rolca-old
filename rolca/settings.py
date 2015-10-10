@@ -47,6 +47,7 @@ INSTALLED_APPS = (
 
     'compressor',
     # 'debug_toolbar',
+    'djcelery_email',
     'django_jenkins',
     'raven.contrib.django.raven_compat',
     'rest_framework',
@@ -235,3 +236,5 @@ LOGGING = {
         }
     },
 }
+
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'

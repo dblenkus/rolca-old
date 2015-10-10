@@ -4,8 +4,6 @@ DEBUG = False
 COMPRESS_ENABLED = True
 HTML_MINIFY = True
 
-TEST_SELENIUM = False
-
 ALLOWED_HOSTS = ['*', ]
 
 DATABASES = {

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-import datetime
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+from datetime import date
 import json
 import logging
 import os
 
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -12,12 +15,31 @@ from django.http import (
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework import viewsets
 
-from .models import File, Photo, Salon, Theme
+from .models import File, Photo, Salon, Theme, Participent
+from .permissions import AdminOrReadOnly
+from .serializers import PhotoSerializer, SalonSerializer
 from login.models import Profile
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
+
+class PhotoViewSet(viewsets.ModelViewSet):
+    serializer_class = PhotoSerializer
+
+    def get_queryset(self):
+        return Photo.objects.filter(
+            Q(participent__uploader=self.request.user) |
+            Q(theme__salon__results_date__lte=date.today()) |
+            Q(theme__salon__judges=self.request.user))
+
+
+class SalonViewSet(viewsets.ModelViewSet):
+    queryset = Salon.objects.all()
+    serializer_class = SalonSerializer
+    permission_classes = (AdminOrReadOnly,)
 
 
 @login_required
@@ -28,8 +50,8 @@ def upload_app(request):
     files = []
 
     if request.method == 'POST':
-        print request.POST
-        print request.FILES
+        print(request.POST)
+        print(request.FILES)
 
         for i in [1, 2, 3]:
             if 'photo{}'.format(i) in request.FILES:
@@ -70,13 +92,16 @@ def upload_app(request):
 
             for file_, title in files:
                 file_.save()
-                Photo.objects.create(title=title, user=request.user, theme=theme,
-                                     photo=file_)
+                user = request.user
+                participent = Participent.objects.create(
+                    first_name=user.first_name, last_name=user.last_name, uploader=user)
+                Photo.objects.create(
+                    title=title, participent=participent, theme=theme, photo=file_)
 
             logout(request)
             return redirect('upload_confirm')
 
-    today = datetime.date.today()
+    today = date.today()
     salons = Salon.objects.filter(start_date__lte=today, end_date__gte=today)
 
     response = {'salons': salons, 'msg': '<br>'.join(msgs)}

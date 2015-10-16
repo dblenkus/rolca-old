@@ -7,7 +7,7 @@ from django.views.generic import RedirectView
 from rest_framework import routers
 
 from login.views import ProfileViewSet, InstitutionViewSet
-from uploader.api import PhotoViewSet, SalonViewSet
+from uploader.views import PhotoViewSet, SalonViewSet
 from jury.api import RatingViewSet
 
 
@@ -15,7 +15,7 @@ router = routers.DefaultRouter()
 router.register(r'user', ProfileViewSet, base_name='user')
 router.register(r'school', InstitutionViewSet)
 router.register(r'salon', SalonViewSet)
-router.register(r'photo', PhotoViewSet)
+router.register(r'photo', PhotoViewSet, base_name='photo')
 router.register(r'rating', RatingViewSet)
 
 urlpatterns = patterns(

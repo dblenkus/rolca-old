@@ -1,19 +1,34 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import StringIO
 
 from django.db import models
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 
 from datetime import date
 from PIL import Image
 
 
+@python_2_unicode_compatible
 class Salon(models.Model):
     """Model for storing salons.
 
-
+    Salon object is the main object of single salon. It  can contain
+    multiple themes, all important dates for salone (start, end, jury
+    and results date) and list of judges.
 
     """
+    #: user who created salon
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='salons_owned')
+
+    #: date salon was created
+    created = models.DateTimeField(auto_now_add=True)
+
+    #: date salon was last modified
+    modified = models.DateTimeField(auto_now=True)
+
     #: title of the salon
     title = models.CharField(max_length=100)
 
@@ -30,9 +45,10 @@ class Salon(models.Model):
     results_date = models.DateField()
 
     #: list of judges
-    judges = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    judges = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='salons_judged')
 
-    def __unicode__(self):
+    def __str__(self):
         """Return salon's title."""
         return self.title
 
@@ -43,27 +59,35 @@ class Salon(models.Model):
     is_active.boolean = True
 
 
+@python_2_unicode_compatible
 class Theme(models.Model):
     """Model for storing themes.
 
-
+    Theme object
 
     """
+
+    #: date theme was created
+    created = models.DateTimeField(auto_now_add=True)
+
+    #: date theme was last modified
+    modified = models.DateTimeField(auto_now=True)
 
     #: title of the theme
     title = models.CharField(max_length=100)
 
     #: salon that theme belongs to
-    salon = models.ForeignKey(Salon)
+    salon = models.ForeignKey(Salon, related_name='themes')
 
     #: number of photos that can be submited to theme
     n_photos = models.IntegerField('Number of photos')
 
-    def __unicode__(self):
+    def __str__(self):
         """Return theme's title."""
         return self.title
 
 
+@python_2_unicode_compatible
 class File(models.Model):
     """Model for storing uploaded images.
 
@@ -73,12 +97,24 @@ class File(models.Model):
     saving.
 
     """
+
+    #: date file was created
+    created = models.DateTimeField(auto_now_add=True)
+
+    #: date file was last modified
+    modified = models.DateTimeField(auto_now=True)
+
+    #: uploaded file
     file = models.ImageField(upload_to='photos')
+
+    #: thumbnail of uploaded file
     thumbnail = models.ImageField(upload_to='thumbs')
+
+    #: user, who uploaded file
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
+        if not self.pk and self.file:
             fn = Image.open(self.file)
             fn.thumbnail((100, 100), Image.ANTIALIAS)
             thumb_io = StringIO.StringIO()
@@ -91,30 +127,68 @@ class File(models.Model):
         super(File, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        # pylint: disable=no-member
-        self.file.delete(False)
-        self.thumbnail.delete(False)
-        # pylint: enable=no-member
+        # delete attached files
+        self.file.delete(save=False)  # pylint: disable=no-member
+        self.thumbnail.delete(save=False)  # pylint: disable=no-member
 
         super(File, self).delete(*args, **kwargs)
 
     def longer_edge(self):
         return max(self.file.width, self.file.height)  # pylint: disable=no-member
 
-    def __unicode__(self):
+    def __str__(self):
         return self.file.name
 
 
+@python_2_unicode_compatible
+class Participent(models.Model):
+    """ Model for storing participents.
+
+
+    """
+
+    #: date participent was created
+    created = models.DateTimeField(auto_now_add=True)
+
+    #: date participent was last modified
+    modified = models.DateTimeField(auto_now=True)
+
+    #: user, wko uploaded participent's photos
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+    #: participent's first name
+    first_name = models.CharField(max_length=30)
+
+    #: participent's last name
+    last_name = models.CharField(max_length=30)
+
+    #: mentor
+    mentor = models.CharField(max_length=30)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+
+@python_2_unicode_compatible
 class Photo(models.Model):
     """Model for storing uploaded photos.
 
 
 
     """
+    #: date photo was created
+    created = models.DateTimeField(auto_now_add=True)
+
+    #: date photo was last modified
+    modified = models.DateTimeField(auto_now=True)
+
     title = models.CharField(max_length=100)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
+    participent = models.ForeignKey('Participent')
+
     theme = models.ForeignKey(Theme)
+
     photo = models.ForeignKey(File)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title

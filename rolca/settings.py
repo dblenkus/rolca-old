@@ -156,9 +156,6 @@ MAX_UPLOAD_SIZE = 1048576  # 1MB
 MAX_IMAGE_RESOLUTION = 2400
 CONTENT_TYPES = ['image/jpeg', ]
 
-
-TASTYPIE_DEFAULT_FORMATS = ['json']
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

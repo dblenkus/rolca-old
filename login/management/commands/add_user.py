@@ -19,41 +19,32 @@ class Command(BaseCommand):
     help = "Create/update user with given email and password."
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--email',
-            type=str,
-            help="New user's email.")
-        parser.add_argument(
-            '--password',
-            type=str,
-            help="New user's password.")
-        parser.add_argument(
-            '--admin',
-            action='store_true',
-            help="Create admin user.")
+        parser.add_argument('--email', type=str, help="New user's email.")
+        parser.add_argument('--username', type=str, help="New user's username.")
+        parser.add_argument('--password', type=str, help="New user's password.")
+        parser.add_argument('--admin', action='store_true', help="Create admin user.")
 
     def handle(self, *args, **options):
-        email = options['email']
-        password = options['password']
+        email = options['email'] or os.environ.get('DJANGO_USER_EMAIL', None)
+        username = options['username'] or os.environ.get('DJANGO_USER_USERNAME', None)
+        password = options['password'] or os.environ.get('DJANGO_USER_PASSWORD', None)
         admin = options['admin']
 
-        if not email and 'DJANGO_USER_EMAIL' in os.environ:
-            email = os.environ['DJANGO_USER_EMAIL']
-        if not password and 'DJANGO_USER_PASSWORD' in os.environ:
-            password = os.environ['DJANGO_USER_PASSWORD']
+        if not email or not username or not password:
+            CommandError("Email, username and password are required")
 
-        if not email or not password:
-            CommandError("Email and password are required")
+        users_list = Profile.objects.filter(username=username)
+        if users_list.exists():
+            user = users_list.first()
 
-        users_list = Profile.objects.filter(email=email)  # pylint: disable=no-member
-        if len(users_list) == 1:
-            user = users_list[0]
-
-            if not user.check_password(password) or user.is_superuser != admin:
+            if (not user.check_password(password) or
+                    user.is_superuser != admin or
+                    email != user.email):
                 user.set_password(password)
                 user.is_superuser = admin
+                user.email = email
                 user.save()
-                return "User {} succesfully updated.".format(email)
+                return "User {} succesfully updated.".format(username)
 
             return "Nothing has changed."
 
@@ -62,6 +53,6 @@ class Command(BaseCommand):
         else:
             create_fn = Profile.objects.create_user
 
-        create_fn(email=email, password=password)
+        create_fn(email=email, username=username, password=password)
 
         return "User {} succesfully created".format(email)

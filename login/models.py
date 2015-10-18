@@ -42,19 +42,20 @@ class ProfileManager(UserManager):
 
     """Custom user manager for `Profile` model."""
 
-    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self, username, email, password, **extra_fields):
         """Creates and saves a User with the given email and password."""
-        user = self.model(email=email, is_staff=is_staff,  # pylint: disable=no-member
-                          is_superuser=is_superuser, **extra_fields)
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)  # pylint: disable=no-member
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        return self._create_user(email, password, False, False, **extra_fields)
+    def create_user(self, username, email, password=None, **extra_fields):
+        return self._create_user(username, email, password, is_staff=False,
+                                 is_superuser=False, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True, **extra_fields)
+    def create_superuser(self, username, email, password, **extra_fields):
+        return self._create_user(username, email, password, is_staff=True,
+                                 is_superuser=True, is_active=True, **extra_fields)
 
 
 class Mentor(models.Model):

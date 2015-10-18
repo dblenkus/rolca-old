@@ -61,12 +61,9 @@ class DatabaseTestCase(unittest.TestCase):
 class DjangoDatabaseTestCase(TestCase):
     def setUp(self):
         user_model = get_user_model()
-        self.user1 = user_model.objects.create_user(
-            'user1@example.com', 'test_pwd1', username='user1')
-        self.user2 = user_model.objects.create_user(
-            'user2@example.com', 'test_pwd2', username='user2')
-        self.judge = user_model.objects.create_user(
-            'user3@example.com', 'test_pwd3')
+        self.user1 = user_model.objects.create_user('user1', 'user1@example.com', 'pwd1')
+        self.user2 = user_model.objects.create_user('user2', 'user2@example.com', 'pwd2')
+        self.judge = user_model.objects.create_user('judge', 'user3@example.com', 'pwd3')
 
         today = date.today()
         self.salon = Salon.objects.create(

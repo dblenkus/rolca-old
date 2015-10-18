@@ -112,23 +112,19 @@ def signup_view(request):
                 del values['mentor']
 
             username = values['email'].split('@')[0].replace('.', '').replace('_', '')
+            values['username'] = username
             n = 0
             while Profile.objects.filter(username=username).exists():
                 n += 1
                 username = '{}_{}'.format(username.split('_')[0], n)
 
             password = Profile.objects.make_random_password()
-            user = Profile.objects.create_user(username=username, password=password,
-                                               **values)
-            user.is_active = True
+            user = Profile.objects.create_user(**values)
             user.save()
 
-            user = authenticate(username=username, password=password)
-            login(request, user)
+            _send_confirmation(request, user, password)
 
-            # _send_confirmation(request, user, password)
-
-            return redirect('upload_app')
+            return redirect('signup_confirm')
 
     response = {'msg': '<br>'.join(msgs), 'errors': errors}
     response.update({key: values[key] for key in fields})

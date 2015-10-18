@@ -122,6 +122,7 @@ class SignupTestCase(TestCase):
         Institution.objects.create(name=u'OS Zgornji Kašelj')
 
         self.post_data = {
+            u'username': 'janez',
             u'first_name': u'Janez',
             u'last_name': u'Novak',
             u'email': u'janez.novak@example.com',
@@ -355,6 +356,7 @@ class SignupTestCase(TestCase):
 class FormsTestCase(TestCase):
     def setUp(self):
         self.user_data = {
+            'username': 'janez',
             'first_name': "Janez",
             'last_name': "Novak",
             'email': "janez.novak@example.com",
@@ -403,6 +405,7 @@ class ProfileModelTestCase(TestCase):
     def setUp(self):
         mentor = Mentor.objects.create(name="Franc Horvat")
         self.user_data = {
+            'username': 'janez',
             'first_name': "Janez",
             'last_name': "Novak",
             'mentor': mentor,
@@ -630,6 +633,7 @@ class InstitutionAPITestCase(APITestCase):
 class ConfirmationModelTestCase(TestCase):
     def setUp(self):
         user_data = {
+            'username': 'janez',
             'first_name': "Janez",
             'last_name': "Novak",
             'email': "janez.novak@example.com",

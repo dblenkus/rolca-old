@@ -2,12 +2,14 @@
 # pylint: disable=C0103,E1103
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import mock
 from os.path import join
+import unittest
 
-from django.test import TestCase
-from django.contrib.auth import get_user_model
+from django.test import RequestFactory, TestCase
 from django.core import mail
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
@@ -16,7 +18,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 
 from .forms import ProfileCreationForm  # , ProfileChangeForm
 from .models import Confirmation, Institution, Mentor, Profile
-from .views import ProfileViewSet
+from .views import login_view, logout_view, ProfileViewSet, signup_view
 
 
 MESSAGES = {
@@ -25,99 +27,158 @@ MESSAGES = {
 }
 
 
-class LoginTestCase(TestCase):
-    fixtures = ['profiles.yaml']
+class LoginTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.factory = RequestFactory()
 
-    def setUp(self):
-        self.username_field = get_user_model().USERNAME_FIELD
+        cls.url_index = reverse('index')
+        cls.url_login = reverse('login')
+        cls.url_logout = reverse('logout')
+        cls.url_upload_app = reverse('upload_app')
 
-        self.url = reverse('login')
-        self.post_data = {self.username_field: 'franchorvat', 'password': 'test_pwd'}
+        cls.post_data = {'username': 'franc', 'password': 'test_pwd'}
 
-    def test_login_redirect_from_index(self):
-        resp = self.client.get('/', follow=True)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'login.html'))
+    @mock.patch('login.views.login')
+    @mock.patch('login.views.authenticate')
+    def test_login_successful(self, authenticate_mock, login_mock):
+        user = mock.Mock()
+        authenticate_mock.return_value = user
 
-    def test_login_logout(self):
-        self.client.post(self.url, self.post_data)
-        self.assertTrue('_auth_user_id' in self.client.session)
-        self.assertEqual(self.client.session['_auth_user_id'], u'2')
+        request = self.factory.post(self.url_login, self.post_data)
+        resp = login_view(request)
 
-        self.client.get(reverse('logout'))
-        self.assertNotIn('_auth_user_id', self.client.session)
+        login_mock.assert_called_once_with(request, user)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.get('location'), self.url_upload_app)
 
-    def test_deny_not_activated(self):
-        Profile.objects.filter(pk=2).update(is_active=False)
-        self.client.post(self.url, self.post_data)
-        self.assertFalse('_auth_user_id' in self.client.session)
+    @mock.patch('login.views.render')
+    @mock.patch('login.views.login')
+    @mock.patch('login.views.authenticate')
+    def test_login_not_active(self, authenticate_mock, login_mock, render_mock):
+        authenticate_mock.return_value = mock.Mock(is_active=False)
+        render_mock.side_effect = lambda req, temp, resp: HttpResponse(resp['msg'])
 
-    def test_deny_without_username(self):
-        del self.post_data[self.username_field]
-        resp = self.client.post(self.url, self.post_data)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'login.html'))
-        self.assertIn(self.username_field, resp.context['errors'])
-        self.assertNotEqual(resp.context['msg'], '')
+        request = self.factory.post(self.url_login, self.post_data)
+        resp = login_view(request)
 
-        self.assertEqual(resp.context[self.username_field], '')
-        self.assertEqual(resp.context['password'], self.post_data['password'])
+        login_mock.assert_not_called()
+        self.assertEqual(resp.content, b"Vaš račun je bil onemogočen.")
 
-    def test_deny_without_password(self):
-        del self.post_data['password']
-        resp = self.client.post(self.url, self.post_data)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'login.html'))
-        self.assertIn('password', resp.context['errors'])
-        self.assertNotEqual(resp.context['msg'], '')
+    @mock.patch('login.views.render')
+    @mock.patch('login.views.login')
+    def test_login_missing_username(self, login_mock, render_mock):
+        render_mock.side_effect = lambda req, temp, resp: HttpResponse(resp['msg'])
 
-        self.assertEqual(
-            resp.context[self.username_field], self.post_data[self.username_field])
-        self.assertEqual(resp.context['password'], '')
+        post_data = self.post_data.copy()
+        del post_data['username']
+        request = self.factory.post(self.url_login, post_data)
+        resp = login_view(request)
 
-    def test_deny_with_wrong_password(self):
-        self.post_data['password'] = 'wrong_pwd'
-        resp = self.client.post(self.url, self.post_data)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'login.html'))
-        self.assertIn('password', resp.context['errors'])
-        self.assertNotEqual(resp.context['msg'], '')
+        login_mock.assert_not_called()
+        self.assertEqual(resp.content, b"Prosim vpišite uporabniško ime.")
 
-        self.assertEqual(
-            resp.context[self.username_field], self.post_data[self.username_field])
-        self.assertEqual(resp.context['password'], self.post_data['password'])
+    @mock.patch('login.views.render')
+    @mock.patch('login.views.login')
+    def test_login_missing_password(self, login_mock, render_mock):
+        render_mock.side_effect = lambda req, temp, resp: HttpResponse(resp['msg'])
 
-    def test_password_recovery(self):
-        resp = self.client.get(reverse('password_reset'))
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'password_reset_form.html'))
+        post_data = self.post_data.copy()
+        del post_data['password']
+        request = self.factory.post(self.url_login, post_data)
+        resp = login_view(request)
 
-        resp = self.client.post(
-            reverse('password_reset'),
-            {'email': 'franc.horvat@example.com'},
-            follow=True)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'password_reset_done.html'))
+        login_mock.assert_not_called()
+        self.assertEqual(resp.content, b"Prosim vpišite geslo.")
 
-        self.assertEqual(len(mail.outbox), 1)
+    @mock.patch('login.views.render')
+    @mock.patch('login.views.login')
+    def test_login_missing_all(self, login_mock, render_mock):
+        render_mock.side_effect = lambda req, temp, resp: HttpResponse(resp['msg'])
 
-        message = mail.outbox[0]
-        url = message.body.split('http://example.com')[1].split('\n', 1)[0]
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'password_reset_confirm.html'))
+        request = self.factory.post(self.url_login, {})
+        resp = login_view(request)
 
-        resp = self.client.post(
-            url, {'new_password1': 'new_pwd', 'new_password2': 'new_pwd'}, follow=True)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'password_reset_complete.html'))
+        login_mock.assert_not_called()
+        self.assertEqual(resp.content, b"Prosim vpišite uporabniško ime.")
 
-        # plyint: disable=no-member
-        u = Profile.objects.get(email='franc.horvat@example.com')
-        self.assertTrue(u.check_password('new_pwd'))
+    @mock.patch('login.views.render')
+    @mock.patch('login.views.login')
+    @mock.patch('login.views.authenticate')
+    def test_login_wrong_password(self, authenticate_mock, login_mock, render_mock):
+        authenticate_mock.return_value = None
+        render_mock.side_effect = lambda req, temp, resp: HttpResponse(resp['msg'])
+
+        request = self.factory.post(self.url_login, self.post_data)
+        resp = login_view(request)
+
+        login_mock.assert_not_called()
+        self.assertEqual(resp.content, b"Uporabniško ime in geslo se ne ujemata.")
+
+    @mock.patch('login.views.logout')
+    def test_logout(self, logout_mock):
+        request = self.factory.get(self.url_logout)
+        resp = logout_view(request)
+
+        logout_mock.assert_called_once_with(request)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.get('location'), self.url_index)
 
 
-class SignupTestCase(TestCase):
+class SignupTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.factory = RequestFactory()
+
+        cls.post_data = {
+            'first_name': 'Janez',
+            'last_name': 'Novak',
+            'email': 'janez.novak@example.com',
+            'address': 'Zgornji Kašelj 42',
+            'post': '1234 Zgornji Kašelj',
+            'school': 'OS Zgornji Kašelj',
+            'mentor': 'Franc Horvat',
+        }
+
+        cls.url_signup = reverse('signup')
+
+    @mock.patch('login.views._send_confirmation')
+    @mock.patch('login.views.Institution.objects.filter')
+    @mock.patch('login.views.Mentor.objects.get_or_create')
+    @mock.patch('login.views.Profile.objects.create_user')
+    def test_successful_signup(self, create_user_mock, mentor_get_or_create_mock,
+                               institution_mock, confirmation_mock):
+        institution_mock.exists = mock.Mock(return_value=True)
+        mentor = mock.MagicMock()
+        mentor_get_or_create_mock.return_value = [mentor]
+
+        request = self.factory.post(self.url_signup, self.post_data)
+        signup_view(request)
+
+        self.post_data['mentor'] = mentor
+        self.post_data['is_mentor'] = False
+        create_user_mock.assert_called_once_with(username='janeznovak', **self.post_data)
+
+        # self.assertEqual(resp.status_code, 200)
+        # self.assertTemplateUsed(resp, join('login', 'signup_confirm.html'))
+        # self.assertEqual(len(mail.outbox), 1)
+
+        # self.assertEqual(Profile.objects.count(), 1)
+
+        # user = Profile.objects.first()
+        # self.assertFalse(user.is_active)
+
+        # message = mail.outbox[0]
+        # url = message.body.split('http://example.com')[1].split('\n', 1)[0]
+        # resp = self.client.get(url, follow=True)
+        # self.assertEqual(resp.status_code, 200)
+        # self.assertTemplateUsed(resp, join('login', 'activation_ok.html'))
+
+        # user = Profile.objects.first()
+        # self.assertTrue(user.is_active)
+
+
+class SignupTestCaseOld(TestCase):
     def setUp(self):
         Institution.objects.create(name=u'OS Zgornji Kašelj')
 
@@ -133,11 +194,6 @@ class SignupTestCase(TestCase):
         }
 
         self.url = reverse('signup')
-
-    def test_template_used(self):
-        resp = self.client.get(self.url)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, join('login', 'signup.html'))
 
     def test_successful_signup(self):
         resp = self.client.post(self.url, self.post_data, follow=True)

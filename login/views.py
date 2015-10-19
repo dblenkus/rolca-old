@@ -72,7 +72,6 @@ def _send_confirmation(request, user, password):
 
 
 def signup_view(request):
-    user = request.user
     msgs = []
     errors = []
     fields = ['first_name', 'last_name', 'email', 'address', 'post', 'school', 'mentor']
@@ -83,8 +82,7 @@ def signup_view(request):
         values = {key: request.POST[key] if key in request.POST
                        else '' for key in fields}
 
-        values['is_mentor'] = ('is_mentor' in request.POST and
-                               request.POST['is_mentor'] == 'on')
+        values['is_mentor'] = (request.POST.get('is_mentor', None) == 'on')
 
         for key in required:
             if not values[key]:
@@ -150,8 +148,8 @@ def login_view(request):
     password = ''
 
     if request.method == 'POST':
-        username = request.POST['username'] if 'username' in request.POST else ''
-        password = request.POST['password'] if 'password' in request.POST else ''
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
 
         if not username:
             msgs.append("Prosim vpišite uporabniško ime.")
@@ -165,16 +163,18 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect(
-                        request.GET['next'] if 'next' in request.GET else 'upload_app')
+                    return redirect(request.GET.get('next', 'upload_app'))
                 else:
                     msgs.append("Vaš račun je bil onemogočen.")
             else:
                 msgs.append("Uporabniško ime in geslo se ne ujemata.")
                 errors.extend(['username', 'password'])
 
-    response = {'msg': '<br>'.join(msgs), 'errors': errors, 'username': username,
-                'password': password}
+    response = {
+        'msg': '<br>'.join(msgs),
+        'errors': errors,
+        'username': username,
+        'password': password}
     return render(request, os.path.join('login', 'login.html'), response)
 
 

@@ -42,39 +42,19 @@ class ProfileManager(UserManager):
 
     """Custom user manager for `Profile` model."""
 
-    def _create_user(self, username, email, password, **extra_fields):
+    def _create_user(self, email, password, is_superuser, is_staff, **extra_fields):
         """Creates and saves a User with the given email and password."""
-        user = self.model(username=username, email=email, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)  # pylint: disable=no-member
         return user
 
-    def create_user(self, username, email, password=None, **extra_fields):
-        return self._create_user(username, email, password, is_staff=False,
-                                 is_superuser=False, **extra_fields)
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False, False, **extra_fields)
 
-    def create_superuser(self, username, email, password, **extra_fields):
-        return self._create_user(username, email, password, is_staff=True,
-                                 is_superuser=True, is_active=True, **extra_fields)
-
-
-class Mentor(models.Model):
-    """Model for linking Users with their mentors.
-
-    Link can be represented as mentor's name in `name` field or as
-    reference to other `Profile` instance in `reference` field.
-
-    """
-    #: mentors name
-    name = models.CharField(max_length=100, blank=True)
-
-    #: reference to mentor's profile
-    reference = models.ForeignKey('Profile', blank=True, null=True,
-                                  limit_choices_to={'is_mentor': True},
-                                  related_name='mentor_profile')
-
-    def __unicode__(self):
-        return self.name if self.name else unicode(self.reference)
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True, True, is_active=True,
+                                 **extra_fields)
 
 
 class Profile(AbstractBaseUser, PermissionsMixin):
@@ -92,16 +72,13 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     """
 
     #: user's email
-    email = models.EmailField('email address')
+    email = models.EmailField('email address', unique=True)
 
     #: user's first name
     first_name = models.CharField(max_length=30)
 
     #: user's last name
     last_name = models.CharField(max_length=30)
-
-    #: username
-    username = models.CharField(max_length=30, unique=True)
 
     #: user's address
     address = models.CharField(max_length=100)
@@ -112,12 +89,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     #: user's school
     school = models.CharField(max_length=100)
 
-    #: indicate if user is mentor
-    is_mentor = models.BooleanField(default=False)
-
-    #: user's mentor
-    mentor = models.ForeignKey(Mentor, blank=True, null=True)
-
     #: indicate if user is activated
     is_active = models.BooleanField('active', default=False)
 
@@ -125,11 +96,11 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField('staff status', default=False)
 
     #: date joined
-    date_joined = models.DateTimeField('date joined', default=timezone.now)
+    date_joined = models.DateTimeField('date joined', auto_now_add=True)
 
     objects = ProfileManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     class Meta:
@@ -142,8 +113,8 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         """Return user's last name and first character of first name."""
-        initial = self.first_name[0] if len(self.first_name) > 0 else ''
-        return u'{} {}.'.format(self.last_name, initial)
+        initial = (self.first_name[0] + '.') if len(self.first_name) > 0 else ''
+        return u'{} {}'.format(self.last_name, initial).strip()
 
     def email_user(self, subject, message, from_email=None):
         """Send email to user."""

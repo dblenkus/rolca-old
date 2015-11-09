@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import os
 
-from django.db.models import Q
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -14,7 +13,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from rest_framework import exceptions, filters, permissions, viewsets
 
-from .models import Confirmation, Institution, Mentor, Profile
+from .models import Confirmation, Institution, Profile
 from .permissions import ProfilePermissions
 from .serializers import InstitutionSerializer, ProfileSerializer
 
@@ -26,21 +25,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        # `mentor_profile__reference must be `Profile` instance, not
-        # `AnonymousUser`
         if not user.is_authenticated():
             return Profile.objects.none()
 
         if user.is_staff or user.is_superuser:
             return Profile.objects.all()
 
-        return Profile.objects.filter(Q(pk=user.pk) | Q(mentor__reference=user))
+        return Profile.objects.filter(pk=user.pk)
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated():
             raise exceptions.NotFound
-        if not request.user.is_mentor:
-            raise exceptions.PermissionDenied
 
         return super(ProfileViewSet, self).create(request, *args, **kwargs)
 
@@ -74,28 +69,22 @@ def _send_confirmation(request, user, password):
 def signup_view(request):
     msgs = []
     errors = []
-    fields = ['first_name', 'last_name', 'email', 'address', 'post', 'school', 'mentor']
-    required = ['first_name', 'last_name', 'email', 'address', 'post', 'school']
+    fields = ['first_name', 'last_name', 'email', 'address', 'post', 'school']
     values = {key: '' for key in fields}
 
     if request.method == 'POST':
         values = {key: request.POST[key] if key in request.POST
                        else '' for key in fields}
 
-        values['is_mentor'] = (request.POST.get('is_mentor', None) == 'on')
-
-        for key in required:
+        for key in fields:
             if not values[key]:
                 msg = "Prosim izpolnite vsa polja."
                 if msg not in msgs:
                     msgs.append(msg)
                 errors.append(key)
 
-        if Profile.objects.filter(
-            first_name=values['first_name'], last_name=values['last_name'],
-            email=values['email']
-        ).exists():
-            msgs.append("Uporabnik že obstaja.")
+        if Profile.objects.filter(email=values['email']).exists():
+            msgs.append("Email naslov že obstaja.")
             errors.append('email')
 
         if ('school' not in errors and
@@ -104,21 +93,8 @@ def signup_view(request):
             errors.append('school')
 
         if len(errors) == 0:
-            if values['mentor']:
-                values['mentor'] = Mentor.objects.get_or_create(name=values['mentor'])[0]
-            else:
-                del values['mentor']
-
-            username = values['email'].split('@')[0].replace('.', '').replace('_', '')
-            values['username'] = username
-            n = 0
-            while Profile.objects.filter(username=username).exists():
-                n += 1
-                username = '{}_{}'.format(username.split('_')[0], n)
-
             password = Profile.objects.make_random_password()
-            user = Profile.objects.create_user(**values)
-            user.save()
+            user = Profile.objects.create_user(password=password, **values)
 
             _send_confirmation(request, user, password)
 
@@ -144,21 +120,21 @@ def activate(request, uidb64, token):  # pylint: disable=unused-argument
 def login_view(request):
     msgs = []
     errors = []
-    username = ''
+    email = ''
     password = ''
 
     if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
+        email = request.POST.get('email', email)
+        password = request.POST.get('password', password)
 
-        if not username:
-            msgs.append("Prosim vpišite uporabniško ime.")
-            errors.append('username')
+        if not email:
+            msgs.append("Prosim vpišite email naslov.")
+            errors.append('email')
         elif not password:
             msgs.append("Prosim vpišite geslo.")
             errors.append('password')
         else:
-            user = authenticate(username=username, password=password)
+            user = authenticate(email=email, password=password)
 
             if user is not None:
                 if user.is_active:
@@ -167,13 +143,13 @@ def login_view(request):
                 else:
                     msgs.append("Vaš račun je bil onemogočen.")
             else:
-                msgs.append("Uporabniško ime in geslo se ne ujemata.")
-                errors.extend(['username', 'password'])
+                msgs.append("Email naslov in geslo se ne ujemata.")
+                errors.extend(['email', 'password'])
 
     response = {
         'msg': '<br>'.join(msgs),
         'errors': errors,
-        'username': username,
+        'email': email,
         'password': password}
     return render(request, os.path.join('login', 'login.html'), response)
 

@@ -3,7 +3,6 @@
 - model: "login.profile"
   pk: 1
   fields:
-    username: "janeznovak"
     first_name: "Janez"
     last_name: "Novak"
     is_active: true
@@ -11,7 +10,6 @@
     is_superuser: false
     is_staff: false
     last_login: null
-    mentor: 1
     groups: []
     address: ""
     user_permissions: []
@@ -23,16 +21,13 @@
 - model: "login.profile"
   pk: 2
   fields:
-    username: "franchorvat"
     first_name: "Franc"
     last_name: "Horvat"
-    is_mentor: true
     is_active: true
     school: "OŠ Zgornji Kašelj"
     is_superuser: false
     is_staff: false
     last_login: null
-    mentor: null
     groups: []
     address: "Zgornji Kašelj 42"
     user_permissions: []
@@ -40,9 +35,3 @@
     password: "pbkdf2_sha256$20000$9Qupeu8C3lkS$UlOHL5XU+SkNoJnUsESi836pr97Z9xL/rkeLFZrhs8Q="  # test_pwd
     email: "franc.horvat@example.com"
     date_joined: "2015-01-01T15:00:00.000Z"
-
-- model: "login.mentor"
-  pk: 1
-  fields:
-    name: ""
-    reference: 2

@@ -1118,7 +1118,7 @@
         return function(prototype) {
           if (isObject(prototype)) {
             Object.prototype = prototype;
-            var result = new Object;
+            var result = {};
             Object.prototype = null;
           }
           return result || context.Object();
@@ -5917,7 +5917,7 @@
         return hasOwnProperty.call(cache, key)
           ? cache[key]
           : (cache[key] = func.apply(this, arguments));
-      }
+      };
       memoized.cache = {};
       return memoized;
     }
@@ -7015,7 +7015,7 @@
     lodash.inject = reduce;
 
     mixin(function() {
-      var source = {}
+      var source = {};
       forOwn(lodash, function(func, methodName) {
         if (!lodash.prototype[methodName]) {
           source[methodName] = func;

@@ -89,4 +89,4 @@ var DownloadCtrl = function($scope, $modalInstance) {
   $scope.cancel = function () {
     $modalInstance.dismiss();
   };
-}
+};

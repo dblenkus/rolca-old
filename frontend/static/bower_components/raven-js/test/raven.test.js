@@ -84,7 +84,7 @@ describe('TraceKit', function(){
                 if (numDone == numReports) {
                     done();
                 }
-            }
+            };
             TraceKit.report.subscribe(subscriptionHandler);
 
             // TraceKit.report always throws an exception in order to trigger

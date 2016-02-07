@@ -11,12 +11,12 @@ if(document.querySelectorAll === void 0 || window.pageYOffset === void 0 || hist
 // Get the top position of an element in the document
 var getTop = function(element) {
     // return value of html.getBoundingClientRect().top ... IE : 0, other browsers : -pageYOffset
-    if(element.nodeName === 'HTML') return -window.pageYOffset
+    if(element.nodeName === 'HTML') return -window.pageYOffset;
     return element.getBoundingClientRect().top + window.pageYOffset;
-}
+};
 // ease in out function thanks to:
 // http://blog.greweb.fr/2012/02/bezier-curve-based-easing-functions-from-concept-to-implementation/
-var easeInOutCubic = function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 }
+var easeInOutCubic = function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 };
 
 // calculate the scroll position we should be in
 // given the start and end point of the scroll
@@ -26,7 +26,7 @@ var position = function(start, end, elapsed, duration) {
     if (elapsed > duration) return end;
     return start + (end - start) * easeInOutCubic(elapsed / duration); // <-- you can change the easing funtion there
     // return start + (end - start) * (elapsed / duration); // <-- this would give a linear scroll
-}
+};
 
 // we use requestAnimationFrame to be called by the browser before every repaint
 // if the first argument is an element then scroll to the top of this element
@@ -57,9 +57,9 @@ var smoothScroll = function(el, duration, callback){
         } else {
             requestAnimationFrame(step);
         }
-    }
+    };
     step();
-}
+};
 
 var linkHandler = function(ev) {
     ev.preventDefault();
@@ -76,11 +76,11 @@ var linkHandler = function(ev) {
     var targetEl = document.getElementById(this.hash.substring(1));
     if (targetEl) {
       smoothScroll(document.getElementById(this.hash.substring(1)), 500, function(el) {
-        location.replace('#' + el.id)
+        location.replace('#' + el.id);
         // this will cause the :target to be activated.
       });
     }
-}
+};
 
 // We look for all the internal links in the documents and attach the smoothscroll function
 document.addEventListener("DOMContentLoaded", function () {

@@ -439,7 +439,7 @@
       return function(prototype) {
         if (isObject(prototype)) {
           Object.prototype = prototype;
-          var result = new Object;
+          var result = {};
           Object.prototype = null;
         }
         return result || root.Object();

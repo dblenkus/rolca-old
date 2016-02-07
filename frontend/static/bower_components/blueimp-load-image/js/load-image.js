@@ -76,7 +76,7 @@
     // the canvas orientation based on the orientation option,
     // gets canvas, options passed as arguments:
     loadImage.transformCoordinates = function () {
-        return;
+
     };
 
     // Returns transformed options, allows to override e.g.

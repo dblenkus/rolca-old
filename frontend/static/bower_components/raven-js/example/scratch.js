@@ -3,7 +3,7 @@ function foo() {
 }
 
 function foo2() {
-    foo()
+    foo();
     console.log('i called foo')
 }
 

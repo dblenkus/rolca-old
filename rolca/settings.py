@@ -209,7 +209,7 @@ LOGGING = {
             'class': 'rolca.utils.PostgresLogHandler',
         },
         'null': {
-            "class": 'django.utils.log.NullHandler',
+            "class": 'logging.NullHandler',
         },
     },
     'loggers': {

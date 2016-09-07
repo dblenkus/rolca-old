@@ -20,9 +20,10 @@ def application(request):
     typ = 0
     fields = ['institution', 'name', 'email', 'institution_name',
               'n_of_applicants']
-    required = ['name', 'institution_name', 'email']
+    required = ['name', 'email']
     values = {key: '' for key in fields}
     values['institution'] = False
+    values['institution_name'] = '/'
     old_n_of_applicants = ''
 
     workshops = Workshop.objects.filter(start_date__gt=datetime.now()) \

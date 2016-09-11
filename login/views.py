@@ -93,12 +93,19 @@ def signup_view(request):
                     msgs.append(msg)
                 errors.append(key)
 
-        if Profile.objects.filter(
+        values['email'] = values['email'].strip()
+
+        profile_qs = Profile.objects.filter(
             first_name=values['first_name'], last_name=values['last_name'],
             email=values['email']
-        ).exists():
-            msgs.append("Uporabnik že obstaja.")
-            errors.append('email')
+        )
+
+        if profile_qs.exists():
+            if profile_qs.first().photo_set.exists():
+                msgs.append("Uporabnik že obstaja.")
+                errors.append('email')
+            else:
+                profile_qs.delete()
 
         if ('school' not in errors and
                 not Institution.objects.filter(name__iexact=values['school']).exists()):

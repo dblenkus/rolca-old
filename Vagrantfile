@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://data.domenblenkus.com/rolcabox.box"
 
   config.ssh.username = "domen"
-  config.ssh.private_key_path = File.expand_path("~/.ssh/id_rsa")
+  config.ssh.private_key_path = File.expand_path("~/.ssh/id_rsa_2")
 
   config.vm.network "forwarded_port", guest: 80, host: 1980
   config.vm.network "forwarded_port", guest: 8000, host: 1981

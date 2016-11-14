@@ -1,5 +1,5 @@
 <div class="container singlePhoto text-center">
-    <img ng-src="../media/{{ photo.photo.file }}" ng-style="photoStyle"></img>
+    <img ng-src="{{ photo.photo.file }}" ng-style="photoStyle"></img>
 
     <div class="rating text-center">
         <i ng-repeat="i in _.range(10)" ng-click="rate(i+1)" class="glyphicon" ng-class="i<rating.rating ? 'glyphicon-star' : 'glyphicon-star-empty'"></i>

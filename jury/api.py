@@ -20,7 +20,7 @@ class RatingViewSet(viewsets.ModelViewSet):
         if photo:
             return queryset.filter(judge__id=judge, photo__id=photo)
         else:
-            return queryset
+            return queryset.filter(judge__id=judge)
 
-    def pre_save(self, obj):
-        obj.judge = self.request.user
+    def perform_create(self, serializer):
+        serializer.save(judge=self.request.user)

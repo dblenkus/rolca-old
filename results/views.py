@@ -53,9 +53,9 @@ def results(request, salon_id):
 
     for photo in photos:
         if prev_author != photo.user.pk:
-            if len(authors) > 0:
-                while len(authors[-1]) < 3:
-                    authors[-1].append(None)
+            # if len(authors) > 0:
+            #     while len(authors[-1]) < 3:
+            #         authors[-1].append(None)
             authors.append([])
         authors[-1].append(photo)
         prev_author = photo.user.pk
@@ -72,19 +72,19 @@ def results(request, salon_id):
 
     gold, silver, bronze, accepted, hms = 0, 0, 0, 0, []
 
-    if salon_id == '2':  # TODO
-        gold = 1008
-        silver = 1153
-        bronze = 1003
-        hms = [249, 627, 499]
-        accepted = 16
+    if salon_id == '1':  # TODO
+        gold = 993
+        silver = 292
+        bronze = 679
+        hms = [256, 389, 822]
+        accepted = 13
 
-    if salon_id == '3':
-        gold = 95
-        silver = 686
-        bronze = 796
-        hms = [491, 335, 692]
-        accepted = 14
+    if salon_id == '2':
+        gold = 5
+        silver = 916
+        bronze = 57
+        hms = [588, 969, 158, 1011]
+        accepted = 16
 
     response = {'authors': authors, 'best_author': best_author, 'salon': salon,
                 'gold': gold, 'silver': silver, 'bronze': bronze, 'hms': hms,

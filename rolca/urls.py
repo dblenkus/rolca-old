@@ -32,7 +32,7 @@ urlpatterns = patterns(
     url(r'^zirija/', include('jury.urls')),
 
     # url(r'^$', RedirectView.as_view(url='/natecaji/'), name="index")
-    url(r'^$', RedirectView.as_view(url='/uporabnik/registracija/'), name="index")
+    url(r'^$', RedirectView.as_view(url='/rezultati/'), name="index")
     # url(r'^', include('frontend.urls')),
 )
 

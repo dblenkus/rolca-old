@@ -23,7 +23,7 @@ AUTH_USER_MODEL = 'login.Profile'
 
 ADMINS = (('Domen Blenkus', 'domen@blenkus.com'), )
 
-LOGIN_URL = '/uporabnik/registracija/'
+LOGIN_URL = '/uporabnik/prijava/'
 
 # Application definition
 

@@ -1,0 +1,116 @@
+body {
+  background-color:#000;
+  color:#fff;
+}
+
+div {
+  width:300px;
+  margin: 20px auto;
+}
+
+.fotostorming{
+  margin-top: 5px;
+  border:1px solid #fff;
+  padding-top:8px;
+	
+  -webkit-border-radius:5px;
+  -moz-border-radius:5px;
+  -o-border-radius:5px;
+  -ms-border-radius:5px;
+  border-radius:5px;
+}
+
+.levo {
+  width:150px;
+  float:left;
+}
+
+.desno {
+  width:150px;
+  float:right;
+}
+
+.sredina{
+  width:150px;
+}
+
+.tabela{
+  display:table; 
+  width:100%;
+}
+
+.vrstica{
+  display: table-row;
+}
+
+.celica{
+  display: table-cell;
+}
+
+.opozorilo{
+  color: #f00;	
+}
+
+input {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color:#000;
+  color:#fff;
+  border:1px solid #fff;
+  font-size:20px;
+  width:300px;
+  min-height:30px;
+  display:block;
+  margin-bottom:15px;
+  margin-top:5px;
+  outline: none;
+  text-align: center;
+
+  -webkit-border-radius:5px;
+  -moz-border-radius:5px;
+  -o-border-radius:5px;
+  -ms-border-radius:5px;
+  border-radius:5px;
+}
+
+.napaka {
+  border:1px solid #f00;
+}
+
+.naslov {
+  width:295px;
+  margin: 10px auto;
+}
+
+input[type=file] {
+  font-size:15px;
+}
+
+input[type=button] {
+  background:none;
+  color:#fff;
+  width:149px;
+}
+
+input[type=submit] {
+  background:none;
+  color:#fff;
+  width:150px;
+  margin-left:75px;
+}
+
+input[type=radio] {
+  width:15px;
+  margin-left:15px;
+  margin-right:8px;
+  display: inline;
+  min-height:0px;
+}
+
+img {
+  margin:auto;
+  display:block;
+}
+
+a {
+  color:#FFFFFF;
+}

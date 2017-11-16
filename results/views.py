@@ -9,7 +9,7 @@ from uploader.models import Salon, Theme, Photo
 from login.models import Profile as User, Institution
 
 
-# @login_required
+@login_required
 def select_results(request):
     salons = Salon.objects.all()
 
@@ -17,7 +17,7 @@ def select_results(request):
     return render(request, os.path.join('results', 'select_results.html'), response)
 
 
-# @login_required
+@login_required
 def select_school_results(request):
     salons = Salon.objects.all()
 
@@ -25,7 +25,7 @@ def select_school_results(request):
     return render(request, os.path.join('results', 'select_school_results.html'), resp)
 
 
-# @login_required
+@login_required
 def photo_view(request, photo_id):
     photo = Photo.objects.get(pk=photo_id)
 
@@ -33,7 +33,7 @@ def photo_view(request, photo_id):
     return render(request, os.path.join('results', 'photo.html'), response)
 
 
-# @login_required
+@login_required
 def results(request, salon_id):
     salon = Salon.objects.filter(pk=salon_id)[0]
     theme = Theme.objects.filter(salon=salon)[0]

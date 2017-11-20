@@ -23,8 +23,8 @@ AUTH_USER_MODEL = 'login.Profile'
 
 ADMINS = (('Domen Blenkus', 'domen@blenkus.com'), )
 
-# LOGIN_URL = '/uporabnik/prijava/'
-LOGIN_URL = '/uporabnik/registracija/'
+LOGIN_URL = '/uporabnik/prijava/'
+# LOGIN_URL = '/uporabnik/registracija/'
 
 # Application definition
 
@@ -69,7 +69,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE_CLASSES = (
-    # 'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,7 +81,7 @@ MIDDLEWARE_CLASSES = (
     'htmlmin.middleware.HtmlMinifyMiddleware',
     'htmlmin.middleware.MarkRequestMiddleware',
 
-    # 'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 STATICFILES_FINDERS = (

@@ -9,7 +9,7 @@ from uploader.models import Salon, Theme, Photo
 from login.models import Profile as User, Institution
 
 
-@login_required
+# @login_required
 def select_results(request):
     salons = Salon.objects.all()
 
@@ -17,7 +17,7 @@ def select_results(request):
     return render(request, os.path.join('results', 'select_results.html'), response)
 
 
-@login_required
+# @login_required
 def select_school_results(request):
     salons = Salon.objects.all()
 
@@ -25,7 +25,7 @@ def select_school_results(request):
     return render(request, os.path.join('results', 'select_school_results.html'), resp)
 
 
-@login_required
+# @login_required
 def photo_view(request, photo_id):
     photo = Photo.objects.get(pk=photo_id)
 
@@ -33,7 +33,7 @@ def photo_view(request, photo_id):
     return render(request, os.path.join('results', 'photo.html'), response)
 
 
-@login_required
+# @login_required
 def results(request, salon_id):
     salon = Salon.objects.filter(pk=salon_id)[0]
     theme = Theme.objects.filter(salon=salon)[0]
@@ -73,18 +73,18 @@ def results(request, salon_id):
     gold, silver, bronze, accepted, hms = 0, 0, 0, 0, []
 
     if salon_id == '1':  # TODO
-        gold = 993
-        silver = 292
-        bronze = 679
-        hms = [256, 389, 822]
-        accepted = 13
+        gold = 535
+        silver = 823
+        bronze = 46
+        hms = [355, 130, 198]
+        accepted = 11
 
     if salon_id == '2':
-        gold = 5
-        silver = 916
-        bronze = 57
-        hms = [588, 969, 158, 1011]
-        accepted = 16
+        gold = 95
+        silver = 686
+        bronze = 889
+        hms = [87, 161, 782]
+        accepted = 19
 
     response = {'authors': authors, 'best_author': best_author, 'salon': salon,
                 'gold': gold, 'silver': silver, 'bronze': bronze, 'hms': hms,

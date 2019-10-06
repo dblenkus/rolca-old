@@ -16,13 +16,7 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
         name="list_datails"),
 
     url(r'^razpisi$',
-        TemplateView.as_view(template_name="uploader/notices.html"),
+        TemplateView.as_view(template_name="uploader/notice.html"),
         name="notices"),
-    url(r'^razpisi/os$',
-        TemplateView.as_view(template_name="uploader/notice_os.html"),
-        name="notice_os"),
-    url(r'^razpisi/ss$',
-        TemplateView.as_view(template_name="uploader/notice_ss.html"),
-        name="notice_ss"),
 
 )
